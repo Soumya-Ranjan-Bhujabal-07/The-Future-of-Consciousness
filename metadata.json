@@ -1,0 +1,6 @@
+{
+  "name": "The Future of Consciousness",
+  "description": "An immersive, interactive academic research reader detailing the convergence of Brain–Computer Interfaces, human enhancement, and perspectives on life beyond the brain.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
