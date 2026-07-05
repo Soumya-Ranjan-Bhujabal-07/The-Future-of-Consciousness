@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Zap, Play, RotateCcw, Cpu, Sliders, Layers, Eye } from "lucide-react";
+import { Zap, Play, Cpu, Layers } from "lucide-react";
 
 // ==========================================
 // 1. ConnectomeSpikeSimulator3D
@@ -67,7 +67,6 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
     layers.forEach((layerZ, layerIdx) => {
       const numNeurons = layerIdx === 1 ? 12 : 6;
       for (let i = 0; i < numNeurons; i++) {
-        // Distribute in a cylinder / cluster around layerZ
         const angle = (i / numNeurons) * Math.PI * 2 + (layerIdx * 0.5);
         const radius = 0.35 + Math.random() * 0.15;
         const x = Math.cos(angle) * radius;
@@ -84,20 +83,17 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
           scale: 0,
           voltage: -70,
           lastFiredTick: -100,
-          baseColor: layerIdx === 0 ? "#00F2FE" : layerIdx === 1 ? "#EC4899" : "#10B981"
+          baseColor: layerIdx === 0 ? "#92a88e" : layerIdx === 1 ? "#cfbda8" : "#cf7d61" // sensory: sage, inter: sand, motor: clay
         });
       }
     });
 
-    // Create feedforward and lateral synapses
     neurons.forEach((nFrom) => {
       neurons.forEach((nTo) => {
         if (nFrom.id === nTo.id) return;
 
-        // Feedforward connection (from layerIdx 0 -> 1 -> 2)
         const zDist = nTo.z - nFrom.z;
         if (zDist > 0.2 && zDist < 0.9) {
-          // Connect to nearby neurons in the next layer
           const dist = Math.sqrt(Math.pow(nFrom.x - nTo.x, 2) + Math.pow(nFrom.y - nTo.y, 2));
           if (dist < 0.6 && Math.random() > 0.3) {
             synapses.push({
@@ -107,7 +103,6 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
             });
           }
         }
-        // Lateral local connections within the same layer
         if (Math.abs(nFrom.z - nTo.z) < 0.15) {
           const dist = Math.sqrt(Math.pow(nFrom.x - nTo.x, 2) + Math.pow(nFrom.y - nTo.y, 2));
           if (dist < 0.4 && Math.random() > 0.6) {
@@ -143,11 +138,9 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
     const neuron = neuronsRef.current.find((n) => n.id === neuronId);
     if (!neuron) return;
 
-    // Set neuron to peak voltage (+30mV action potential) and record fire tick
     neuron.voltage = 30;
     neuron.lastFiredTick = ticksRef.current;
 
-    // Propagate spike signals to all target synapses
     const outbound = synapsesRef.current.filter((s) => s.from === neuronId);
     outbound.forEach((syn) => {
       spikesRef.current.push({
@@ -177,42 +170,34 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
       const centerY = height / 2;
 
       // 1. Physics: Update voltage decays & spike travel
-      // Voltage decay back to resting potential (-70mV)
       neuronsRef.current.forEach((n) => {
         if (n.voltage > -70) {
           if (n.voltage === 30) {
-            // Repolarization phase
             n.voltage = -85; // hyperpolarization undershoot
           } else {
-            // Gradual leak back to rest (-70mV)
             n.voltage += (-70 - n.voltage) * 0.08;
           }
         }
       });
 
-      // Update travelling spike particles
       const speedIncr = 1 / Math.max(1, conductionSpeed);
       const activeSpikes: SpikeParticle[] = [];
 
       spikesRef.current.forEach((spike) => {
         spike.progress += speedIncr;
         if (spike.progress >= 1.0) {
-          // Spike reached target! Add synaptic charge to recipient
           const target = neuronsRef.current.find((n) => n.id === spike.to);
           const syn = synapsesRef.current.find((s) => s.from === spike.from && s.to === spike.to);
 
           if (target && syn) {
-            // Check refractory period constraint
             const ticksSinceLastFire = ticksRef.current - target.lastFiredTick;
             const isRefractory = ticksSinceLastFire < (refractoryPeriod / 16);
 
             if (!isRefractory) {
-              // Increase postsynaptic potential based on weight slider and synapse weight
               const weightMultiplier = synapticWeight / 100;
               const charge = syn.weight * 16 * weightMultiplier;
               target.voltage += charge;
 
-              // Threshold check: if target crosses -55mV, it fires!
               if (target.voltage >= -55) {
                 injectSpikeAt(target.id);
               }
@@ -224,16 +209,9 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
       });
       spikesRef.current = activeSpikes;
 
-      // 2. Draw: Clear and paint grid
-      ctx.fillStyle = "rgba(4, 8, 16, 0.4)";
+      // 2. Draw
+      ctx.fillStyle = "rgba(27, 20, 17, 0.4)"; // warm dark earth fill
       ctx.fillRect(0, 0, width, height);
-
-      // Faint cyber grid
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
-      ctx.lineWidth = 1;
-      for (let x = 0; x < width; x += 40) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
-      }
 
       // Rotate automatically if idle
       if (isRotating && !isDragging.current) {
@@ -263,7 +241,6 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
         n.scale = scale;
       });
 
-      // Painter's algorithm sort for connections & nodes
       // Draw synapses
       synapsesRef.current.forEach((syn) => {
         const from = neuronsRef.current.find((n) => n.id === syn.from);
@@ -276,7 +253,7 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
         ctx.beginPath();
         ctx.moveTo(from.px, from.py);
         ctx.lineTo(to.px, to.py);
-        ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.25})`;
+        ctx.strokeStyle = `rgba(207, 189, 168, ${opacity * 0.3})`;
         ctx.lineWidth = 0.65;
         ctx.stroke();
       });
@@ -292,11 +269,8 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
 
         ctx.beginPath();
         ctx.arc(sx, sy, 3, 0, Math.PI * 2);
-        ctx.fillStyle = "#F59E0B"; // bright orange glowing signal packet
-        ctx.shadowColor = "#F59E0B";
-        ctx.shadowBlur = 8;
+        ctx.fillStyle = "#cf7d61"; // Warm clay glowing signal packet
         ctx.fill();
-        ctx.shadowBlur = 0;
       });
 
       // Draw Neurons (sorted by depth)
@@ -305,32 +279,29 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
         const size = (4.5 + (n.voltage + 85) / 115 * 3.5) * (n.scale / 120);
         const isHovered = activeDendriteFocus === n.id;
 
-        // Glow ring around highly excited or firing neurons
         if (n.voltage > -55 || isHovered) {
           ctx.beginPath();
           ctx.arc(n.px, n.py, size * 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = n.voltage > 10 ? "rgba(245, 158, 11, 0.25)" : "rgba(0, 242, 254, 0.15)";
+          ctx.fillStyle = n.voltage > 10 ? "rgba(207, 125, 97, 0.25)" : "rgba(146, 168, 142, 0.15)";
           ctx.fill();
         }
 
-        // Core node
         ctx.beginPath();
         ctx.arc(n.px, n.py, size * (isHovered ? 1.4 : 1.0), 0, Math.PI * 2);
         
         if (n.voltage > 0) {
-          ctx.fillStyle = "#F59E0B"; // Firing flash
+          ctx.fillStyle = "#cf7d61"; // Firing flash
         } else {
           ctx.fillStyle = n.baseColor;
         }
 
-        ctx.strokeStyle = "#040810";
+        ctx.strokeStyle = "#1b1411";
         ctx.lineWidth = 1;
         ctx.fill();
         ctx.stroke();
 
-        // Draw node ID or Voltage on hover
         if (isHovered) {
-          ctx.fillStyle = "#FFFFFF";
+          ctx.fillStyle = "#f4f1ea";
           ctx.font = "bold 8px monospace";
           ctx.fillText(`NEURON_${n.id} (${Math.round(n.voltage)}mV)`, n.px + 10, n.py - 4);
         }
@@ -343,7 +314,6 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
     return () => cancelAnimationFrame(animId);
   }, [synapticWeight, conductionSpeed, refractoryPeriod, isRotating, activeDendriteFocus]);
 
-  // Drag and hover bounds
   const handleMouseDown = (e: React.MouseEvent) => {
     isDragging.current = true;
     lastMousePos.current = { x: e.clientX, y: e.clientY };
@@ -367,7 +337,6 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
 
       lastMousePos.current = { x: e.clientX, y: e.clientY };
     } else {
-      // Find closest node to hover
       let foundNodeId: number | null = null;
       let minDist = 18;
 
@@ -391,23 +360,22 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
 
   const handleCanvasClick = () => {
     if (activeDendriteFocus !== null) {
-      // Clicked on a neuron: inject action potential!
       injectSpikeAt(activeDendriteFocus);
     }
   };
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-5 md:p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+    <div className="w-full rounded border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-xl shadow p-5 md:p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-earth-clay/10 pb-4">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-pink-500/10 border border-pink-500/30 rounded-lg text-pink-400">
+          <div className="p-2 bg-earth-forest/20 border border-earth-moss/20 rounded text-earth-sage">
             <Zap size={16} className="animate-pulse" />
           </div>
           <div>
-            <span className="font-mono text-[9px] text-pink-500 tracking-wider font-bold block uppercase">
+            <span className="font-mono text-[9px] text-earth-sage tracking-wider font-bold block uppercase">
               HEBBIAN CONNECTOMIC ENGINE
             </span>
-            <h4 className="font-sans text-sm font-extrabold text-white tracking-wide">
+            <h4 className="font-sans text-sm font-extrabold text-earth-parchment tracking-wide">
               3D Neural Cascade & Spike Connectome
             </h4>
           </div>
@@ -416,14 +384,13 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => {
-              // Fire action potentials in random layer-0 sensory neurons
-              const layer0 = neuronsRef.current.filter((n) => n.baseColor === "#00F2FE");
+              const layer0 = neuronsRef.current.filter((n) => n.baseColor === "#92a88e");
               if (layer0.length > 0) {
                 const randomNeuron = layer0[Math.floor(Math.random() * layer0.length)];
                 injectSpikeAt(randomNeuron.id);
               }
             }}
-            className="py-1 px-3 bg-[#00F2FE]/15 border border-[#00F2FE]/30 hover:bg-[#00F2FE]/25 text-[#00F2FE] rounded font-mono text-[9px] font-bold transition-all uppercase flex items-center space-x-1"
+            className="py-1 px-3 bg-earth-forest/20 border border-earth-moss/30 hover:bg-earth-forest/30 text-earth-sage rounded font-mono text-[9px] font-bold transition-all uppercase flex items-center space-x-1"
           >
             <Play size={10} />
             <span>INJECT SENSORY IMPULSE</span>
@@ -434,7 +401,7 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-center">
         {/* The 3D Render Canvas Box */}
         <div 
-          className="lg:col-span-3 h-[300px] relative rounded-xl border border-white/5 bg-black/60 overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing"
+          className="lg:col-span-3 h-[300px] relative rounded border border-earth-clay/10 bg-earth-dark/60 overflow-hidden flex items-center justify-center select-none cursor-grab active:cursor-grabbing"
           ref={containerRef}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -444,26 +411,26 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
         >
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
           
-          <div className="absolute top-3 left-3 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-1 px-2 rounded border border-white/5 uppercase">
+          <div className="absolute top-3 left-3 pointer-events-none font-mono text-[8px] text-earth-sand/30 bg-earth-dark/50 py-1 px-2 rounded border border-earth-clay/10 uppercase">
             3D Connectome Matrix • Click Node to Fire
           </div>
-          <div className="absolute bottom-3 right-3 pointer-events-none font-mono text-[8px] text-pink-500 bg-black/50 py-1 px-2 rounded border border-white/5">
-            PROJECTIONS: SENSORY(CYAN) → INTER(PINK) → MOTOR(GREEN)
+          <div className="absolute bottom-3 right-3 pointer-events-none font-mono text-[8px] text-earth-sage bg-earth-dark/50 py-1 px-2 rounded border border-earth-clay/10">
+            PROJECTIONS: SENSORY(SAGE) → INTER(SAND) → MOTOR(CLAY)
           </div>
         </div>
 
         {/* Adjusters and Readout */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="p-4 rounded-xl border border-white/5 bg-[#0B0F19]/60 space-y-4 font-mono text-[10px]">
-            <span className="font-mono text-[9px] text-slate-400 block border-b border-white/15 pb-1 font-bold uppercase tracking-widest">
+          <div className="p-4 rounded border border-earth-clay/10 bg-earth-dark/60 space-y-4 font-mono text-[10px]">
+            <span className="font-mono text-[9px] text-earth-sand/40 block border-b border-earth-clay/10 pb-1 font-bold uppercase tracking-widest">
               LATTICE_PARAMETER_DECIMATION
             </span>
 
             {/* Slider 1: Synaptic Weight */}
             <div className="space-y-1">
-              <div className="flex justify-between text-slate-300">
+              <div className="flex justify-between text-earth-sand/70">
                 <span>SYNAPTIC WEIGHT (GAIN)</span>
-                <span className="text-pink-400 font-bold">{synapticWeight}%</span>
+                <span className="text-earth-sage font-bold">{synapticWeight}%</span>
               </div>
               <input 
                 type="range" 
@@ -471,18 +438,18 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
                 max="150" 
                 value={synapticWeight} 
                 onChange={(e) => setSynapticWeight(Number(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#00F2FE]"
+                className="w-full h-1 bg-earth-dark/40 rounded-lg appearance-none cursor-pointer accent-earth-sage"
               />
-              <span className="text-[8px] text-slate-500 block leading-tight">
+              <span className="text-[8px] text-earth-sand/40 block leading-tight">
                 Increases amplitude of recipient voltage per incoming action potential spike.
               </span>
             </div>
 
             {/* Slider 2: Axonal Transmission speed */}
             <div className="space-y-1">
-              <div className="flex justify-between text-slate-300">
+              <div className="flex justify-between text-earth-sand/70">
                 <span>AXON CONDUCTION DELAY</span>
-                <span className="text-teal-400 font-bold">{(conductionSpeed * 16).toFixed(0)} ms</span>
+                <span className="text-earth-bark font-bold">{(conductionSpeed * 16).toFixed(0)} ms</span>
               </div>
               <input 
                 type="range" 
@@ -490,18 +457,18 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
                 max="10" 
                 value={conductionSpeed} 
                 onChange={(e) => setConductionSpeed(Number(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-[#10B981]"
+                className="w-full h-1 bg-earth-dark/40 rounded-lg appearance-none cursor-pointer accent-earth-bark"
               />
-              <span className="text-[8px] text-slate-500 block leading-tight">
+              <span className="text-[8px] text-earth-sand/40 block leading-tight">
                 Emulates axonal myelination thickness, slowing down signal travel time between synapses.
               </span>
             </div>
 
             {/* Slider 3: Refractory Period */}
             <div className="space-y-1">
-              <div className="flex justify-between text-slate-300">
+              <div className="flex justify-between text-earth-sand/70">
                 <span>REFRACTORY BLOCKING</span>
-                <span className="text-rose-400 font-bold">{refractoryPeriod} ms</span>
+                <span className="text-earth-bark font-bold">{refractoryPeriod} ms</span>
               </div>
               <input 
                 type="range" 
@@ -509,9 +476,9 @@ export const ConnectomeSpikeSimulator3D: React.FC = () => {
                 max="80" 
                 value={refractoryPeriod} 
                 onChange={(e) => setRefractoryPeriod(Number(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-rose-400"
+                className="w-full h-1 bg-earth-dark/40 rounded-lg appearance-none cursor-pointer accent-earth-bark"
               />
-              <span className="text-[8px] text-slate-500 block leading-tight">
+              <span className="text-[8px] text-earth-sand/40 block leading-tight">
                 The minimum duration a neuron is paralyzed before it can depolarize and fire again.
               </span>
             </div>
@@ -540,25 +507,21 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
 
   const [deviceType, setDeviceType] = useState<"utah" | "neuropixels" | "ecog" | "eeg">("neuropixels");
   const [implantDepth, setImplantDepth] = useState<number>(50); // 0% (surface) to 100% (deep Layer VI)
-  const [activeFrequency, setActiveFrequency] = useState<number>(30); // Hertz readout
 
   const cellsRef = useRef<CellBody[]>([]);
   const signalHistoryRef = useRef<number[]>([]);
   const ticksRef = useRef<number>(0);
 
-  // Define cortical columns & neocortical layers
   const layers = [
-    { name: "Layer I (Molecular)", depthStart: 0, depthEnd: 15, color: "rgba(100, 116, 139, 0.15)" },
-    { name: "Layer II/III (External Granular)", depthStart: 15, depthEnd: 40, color: "rgba(59, 130, 246, 0.08)" },
-    { name: "Layer IV (Internal Granular)", depthStart: 40, depthEnd: 60, color: "rgba(16, 185, 129, 0.08)" },
-    { name: "Layer V (Internal Pyramidal)", depthStart: 60, depthEnd: 85, color: "rgba(236, 72, 153, 0.08)" },
-    { name: "Layer VI (Multiform)", depthStart: 85, depthEnd: 100, color: "rgba(139, 92, 246, 0.08)" },
+    { name: "Layer I (Molecular)", depthStart: 0, depthEnd: 15, color: "rgba(140, 125, 112, 0.15)" },
+    { name: "Layer II/III (External Granular)", depthStart: 15, depthEnd: 40, color: "rgba(146, 168, 142, 0.08)" },
+    { name: "Layer IV (Internal Granular)", depthStart: 40, depthEnd: 60, color: "rgba(207, 189, 168, 0.08)" },
+    { name: "Layer V (Internal Pyramidal)", depthStart: 60, depthEnd: 85, color: "rgba(207, 125, 97, 0.08)" },
+    { name: "Layer VI (Multiform)", depthStart: 85, depthEnd: 100, color: "rgba(112, 130, 114, 0.08)" },
   ];
 
-  // Initialize cortical column cell bodies
   useEffect(() => {
     const cells: CellBody[] = [];
-    // Distribute pyramidal cells in deeper layer V/VI and granular cells in IV
     for (let i = 0; i < 45; i++) {
       const yPercent = Math.random() * 100;
       let layer = 1;
@@ -579,7 +542,6 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
     signalHistoryRef.current = Array.from({ length: 150 }).map(() => 0);
   }, []);
 
-  // Main rendering loop for depth oscilloscope & visual column
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -596,12 +558,10 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
       const columnWidth = w * 0.55;
       const oscWidth = w * 0.40;
 
-      // Clear
-      ctx.fillStyle = "#040810";
+      ctx.fillStyle = "#1b1411"; // warm dark background
       ctx.fillRect(0, 0, w, h);
 
       // --- DRAW 3D-LIKE CORTICAL COLUMN ---
-      // Paint layer backgrounds
       layers.forEach((layer) => {
         const yStart = (layer.depthStart / 100) * (h - 40) + 20;
         const yEnd = (layer.depthEnd / 100) * (h - 40) + 20;
@@ -610,16 +570,14 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
         ctx.fillStyle = layer.color;
         ctx.fillRect(15, yStart, columnWidth - 20, layerHeight);
 
-        // Layer boundaries
-        ctx.strokeStyle = "rgba(255, 255, 255, 0.06)";
+        ctx.strokeStyle = "rgba(207, 189, 168, 0.08)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(15, yEnd);
         ctx.lineTo(columnWidth - 5, yEnd);
         ctx.stroke();
 
-        // Label Layer
-        ctx.fillStyle = "rgba(255, 255, 255, 0.25)";
+        ctx.fillStyle = "rgba(244, 241, 234, 0.25)";
         ctx.font = "7px monospace";
         ctx.fillText(layer.name.toUpperCase(), 20, yStart + 10);
       });
@@ -629,12 +587,10 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
         const cx = 15 + (cell.x / 400) * (columnWidth - 40);
         const cy = (cell.y / 100) * (h - 40) + 20;
 
-        // Is cell pulsing
         const isFiring = (ticksRef.current + cell.pulseTick) % 70 < 4;
         
         ctx.beginPath();
         if (cell.layer === 4) {
-          // Pyramidal neuron triangles
           ctx.moveTo(cx, cy - 3.5);
           ctx.lineTo(cx - 3, cy + 2.5);
           ctx.lineTo(cx + 3, cy + 2.5);
@@ -644,16 +600,15 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
         }
 
         ctx.fillStyle = isFiring 
-          ? "rgba(245, 158, 11, 0.9)" 
-          : cell.layer === 3 ? "rgba(16, 185, 129, 0.5)" : "rgba(0, 242, 254, 0.4)";
+          ? "rgba(207, 125, 97, 0.9)" 
+          : cell.layer === 3 ? "rgba(146, 168, 142, 0.5)" : "rgba(207, 189, 168, 0.4)";
         ctx.fill();
 
         if (isFiring && cell.layer === 4) {
-          // Draw axon trace extending upwards
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.lineTo(cx, cy - 14);
-          ctx.strokeStyle = "rgba(245,158,11,0.4)";
+          ctx.strokeStyle = "rgba(207,125,97,0.4)";
           ctx.stroke();
         }
       });
@@ -663,28 +618,21 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
       let waveVal = 0;
 
       if (deviceType === "utah") {
-        // High frequency micro-spike clicks, registers only if deep in Layer IV / V (depth: 40% to 85%)
         const isNearLayer = implantDepth > 38 && implantDepth < 82;
         if (isNearLayer) {
           waveVal = Math.sin(ticksRef.current * 0.8) * 6;
-          // random fire spikes
           if (ticksRef.current % 18 === 0) waveVal += (Math.random() > 0.5 ? 24 : -24);
         } else {
-          waveVal = (Math.random() - 0.5) * 2; // baseline noise
+          waveVal = (Math.random() - 0.5) * 2;
         }
       } else if (deviceType === "neuropixels") {
-        // Full vertical shaft recording, spikes happening across multiple depths
         waveVal = Math.sin(ticksRef.current * 0.4) * 8 + Math.cos(ticksRef.current * 1.5) * 5;
         if (ticksRef.current % 12 === 0) waveVal += (Math.random() > 0.5 ? 18 : -18);
         if (ticksRef.current % 34 === 0) waveVal += (Math.random() > 0.5 ? -28 : 28);
       } else if (deviceType === "ecog") {
-        // High-gamma sub-dural aggregate local field potentials
         waveVal = Math.sin(ticksRef.current * 0.22) * 16 + Math.sin(ticksRef.current * 0.8) * 8;
-        // smooth noise
         waveVal += (Math.random() - 0.5) * 4;
       } else {
-        // Scalp EEG (External, heavily damped skull boundary)
-        // High amplitude slow alpha/delta oscillations
         waveVal = Math.sin(ticksRef.current * 0.08) * 26 + Math.cos(ticksRef.current * 0.03) * 12;
         waveVal += (Math.random() - 0.5) * 1.5;
       }
@@ -697,14 +645,14 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
 
       // --- DRAW OSCILLOSCOPE READOUT PANEL ---
       const oscXStart = columnWidth + 5;
-      ctx.fillStyle = "rgba(4, 8, 16, 0.7)";
+      ctx.fillStyle = "rgba(27, 20, 17, 0.7)";
       ctx.fillRect(oscXStart, 20, oscWidth - 15, h - 40);
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+      ctx.strokeStyle = "rgba(207, 189, 168, 0.08)";
       ctx.lineWidth = 1;
       ctx.strokeRect(oscXStart, 20, oscWidth - 15, h - 40);
 
       // Grid inside oscilloscope
-      ctx.strokeStyle = "rgba(0, 242, 254, 0.04)";
+      ctx.strokeStyle = "rgba(146, 168, 142, 0.04)";
       for (let ox = oscXStart; ox < oscXStart + oscWidth; ox += 25) {
         ctx.beginPath(); ctx.moveTo(ox, 20); ctx.lineTo(ox, h - 20); ctx.stroke();
       }
@@ -715,7 +663,7 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
       // Waveform line
       ctx.beginPath();
       ctx.lineWidth = 1.3;
-      ctx.strokeStyle = deviceType === "utah" ? "#F59E0B" : deviceType === "neuropixels" ? "#00F2FE" : deviceType === "ecog" ? "#EC4899" : "#10B981";
+      ctx.strokeStyle = deviceType === "utah" ? "#cf7d61" : deviceType === "neuropixels" ? "#92a88e" : deviceType === "ecog" ? "#cfbda8" : "#8c7d70";
       
       signalHistoryRef.current.forEach((val, idx) => {
         const ox = oscXStart + idx;
@@ -725,8 +673,7 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
       });
       ctx.stroke();
 
-      // Osc labels
-      ctx.fillStyle = "#A0AEC0";
+      ctx.fillStyle = "#cfbda8";
       ctx.font = "bold 6.5px monospace";
       ctx.fillText("OSCILLOSCOPE_CHANNEL_01", oscXStart + 8, 32);
       ctx.fillStyle = ctx.strokeStyle;
@@ -734,50 +681,44 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
 
       // --- DRAW THE IMPLANT PROBE GRAPHIC ---
       ctx.lineWidth = 2;
-      ctx.strokeStyle = "rgba(226, 232, 240, 0.65)";
-      ctx.fillStyle = "rgba(226, 232, 240, 0.8)";
+      ctx.strokeStyle = "rgba(244, 241, 234, 0.65)";
+      ctx.fillStyle = "rgba(244, 241, 234, 0.8)";
 
       if (deviceType === "utah") {
-        // Bed of penetrating nails
         const depthY = activeY;
         ctx.beginPath();
         ctx.moveTo(columnWidth / 2 - 25, depthY - 15);
         ctx.lineTo(columnWidth / 2 + 25, depthY - 15);
         ctx.stroke();
-        // Spikes penetrating down
         for (let sp = -20; sp <= 20; sp += 8) {
           ctx.beginPath();
           ctx.moveTo(columnWidth / 2 + sp, depthY - 15);
           ctx.lineTo(columnWidth / 2 + sp, depthY);
-          ctx.strokeStyle = "#F59E0B";
+          ctx.strokeStyle = "#cf7d61";
           ctx.stroke();
         }
       } else if (deviceType === "neuropixels") {
-        // Single deep vertical silicon shank spanning from surface down to depth
         ctx.beginPath();
         ctx.moveTo(columnWidth / 2, 20);
         ctx.lineTo(columnWidth / 2, activeY);
-        ctx.strokeStyle = "#00F2FE";
+        ctx.strokeStyle = "#92a88e";
         ctx.lineWidth = 2.5;
         ctx.stroke();
-        // Recording channel microdots on shank
-        ctx.fillStyle = "#FFFFFF";
+        ctx.fillStyle = "#ffffff";
         for (let dotY = 25; dotY <= activeY; dotY += 12) {
           ctx.beginPath();
           ctx.arc(columnWidth / 2, dotY, 1, 0, Math.PI * 2);
           ctx.fill();
         }
       } else if (deviceType === "ecog") {
-        // Flat dural grid resting on the absolute top surface
-        ctx.fillStyle = "rgba(236,72,153,0.3)";
-        ctx.strokeStyle = "#EC4899";
+        ctx.fillStyle = "rgba(207,189,168,0.3)";
+        ctx.strokeStyle = "#cfbda8";
         ctx.lineWidth = 1.5;
         ctx.fillRect(columnWidth / 2 - 35, 20, 70, 4);
         ctx.strokeRect(columnWidth / 2 - 35, 20, 70, 4);
       } else {
-        // Scalp EEG electrode floating high above the outer frame (outside layer 1)
-        ctx.fillStyle = "rgba(16, 185, 129, 0.3)";
-        ctx.strokeStyle = "#10B981";
+        ctx.fillStyle = "rgba(146, 168, 142, 0.3)";
+        ctx.strokeStyle = "#92a88e";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.arc(columnWidth / 2, 10, 4, 0, Math.PI * 2);
@@ -793,24 +734,24 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
   }, [deviceType, implantDepth]);
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-5 md:p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+    <div className="w-full rounded border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-xl shadow p-5 md:p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-earth-clay/10 pb-4">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-teal-500/10 border border-teal-500/30 rounded-lg text-teal-400">
+          <div className="p-2 bg-earth-forest/20 border border-earth-moss/20 rounded text-earth-sage">
             <Cpu size={16} />
           </div>
           <div>
-            <span className="font-mono text-[9px] text-teal-400 tracking-wider font-bold block uppercase">
+            <span className="font-mono text-[9px] text-earth-sage tracking-wider font-bold block uppercase">
               CORTICAL TRANSLATION SYSTEM
             </span>
-            <h4 className="font-sans text-sm font-extrabold text-white tracking-wide">
+            <h4 className="font-sans text-sm font-extrabold text-earth-parchment tracking-wide">
               Electrode Depth Oscilloscope & Implant Simulator
             </h4>
           </div>
         </div>
 
         {/* Device Selection Tab Buttons */}
-        <div className="flex bg-black/40 rounded-lg p-0.5 border border-white/5 font-mono text-[9px]">
+        <div className="flex bg-earth-dark/40 rounded p-0.5 border border-earth-clay/10 font-mono text-[9px]">
           {["utah", "neuropixels", "ecog", "eeg"].map((dev) => (
             <button
               key={dev}
@@ -821,8 +762,8 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
               }}
               className={`py-1 px-2.5 rounded font-bold transition-all uppercase ${
                 deviceType === dev 
-                  ? "bg-teal-500/10 text-teal-300 border border-teal-500/20 shadow-md" 
-                  : "text-slate-500 hover:text-slate-300"
+                  ? "bg-earth-forest/20 text-earth-sage border border-earth-moss/30 shadow-sm" 
+                  : "text-earth-sand/50 hover:text-earth-sand"
               }`}
             >
               {dev}
@@ -833,22 +774,22 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
         {/* Visual Cortical Column */}
-        <div className="lg:col-span-3 h-[240px] relative rounded-xl border border-white/5 bg-black/50 overflow-hidden flex items-center justify-center select-none" ref={containerRef}>
+        <div className="lg:col-span-3 h-[240px] relative rounded border border-earth-clay/10 bg-earth-dark/50 overflow-hidden flex items-center justify-center select-none" ref={containerRef}>
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
         </div>
 
         {/* Sidebar Controls */}
         <div className="lg:col-span-2 flex flex-col justify-between space-y-4">
-          <div className="p-4 rounded-xl border border-white/5 bg-[#0B0F19]/60 space-y-4 font-mono text-[10px] flex-1">
-            <span className="font-mono text-[9px] text-slate-400 block border-b border-white/15 pb-1 font-bold uppercase tracking-widest">
+          <div className="p-4 rounded border border-earth-clay/10 bg-earth-dark/60 space-y-4 font-mono text-[10px] flex-1">
+            <span className="font-mono text-[9px] text-earth-sand/40 block border-b border-earth-clay/10 pb-1 font-bold uppercase tracking-widest">
               Implant Specifications
             </span>
 
             {/* Depth slider (active only for Utah / Neuropixels) */}
             <div className="space-y-1">
-              <div className="flex justify-between text-slate-300">
+              <div className="flex justify-between text-earth-sand/70">
                 <span>CORTICAL DEPTH PLACEMENT</span>
-                <span className="text-teal-400 font-bold">
+                <span className="text-earth-sage font-bold">
                   {deviceType === "eeg" ? "External (above skull)" : deviceType === "ecog" ? "Surface Sub-Dural" : `${implantDepth}% (${(implantDepth * 0.02).toFixed(2)}mm)`}
                 </span>
               </div>
@@ -859,17 +800,17 @@ export const ImplantPlacementSimulator3D: React.FC = () => {
                 disabled={deviceType === "ecog" || deviceType === "eeg"}
                 value={implantDepth} 
                 onChange={(e) => setImplantDepth(Number(e.target.value))}
-                className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-teal-400 disabled:opacity-20 disabled:cursor-not-allowed"
+                className="w-full h-1 bg-earth-dark/40 rounded-lg appearance-none cursor-pointer accent-earth-sage disabled:opacity-20 disabled:cursor-not-allowed"
               />
-              <span className="text-[8px] text-slate-500 block leading-tight">
+              <span className="text-[8px] text-earth-sand/40 block leading-tight">
                 Utah Arrays penetrate 1.5mm to Layer IV. Neuropixels scan the entire 2.0mm depth across layers. ECoG rests on dural surface.
               </span>
             </div>
 
             {/* Microelectrode physics description */}
-            <div className="pt-2 border-t border-white/10">
-              <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mb-1">Decoded Signal Characteristics</span>
-              <p className="text-[8.5px] text-slate-400 leading-relaxed font-sans">
+            <div className="pt-2 border-t border-earth-clay/10">
+              <span className="text-[9px] text-earth-sand/50 font-bold uppercase tracking-wider block mb-1">Decoded Signal Characteristics</span>
+              <p className="text-[8.5px] text-earth-sand/60 leading-relaxed font-sans">
                 {deviceType === "utah" && "UTAH ARRAY: Captures sharp, localized 10,000Hz voltage spikes (extracellular single-unit action potentials) in Layer IV/V. Extremely high spatial resolution but high tissue scarring risk."}
                 {deviceType === "neuropixels" && "NEUROPIXELS THREAD: Registures spike discharges across all 6 layers simultaneously with 960 micro-probes, enabling massive structural pathway tracing and mapping of cortical workflows."}
                 {deviceType === "ecog" && "SURFACE ECOG: Registers aggregate micro-volt currents (Local Field Potentials) of the outer molecular sheet. Non-penetrative, low tissue reaction, with high high-gamma band resolution."}

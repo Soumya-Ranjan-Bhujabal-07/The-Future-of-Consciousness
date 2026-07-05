@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Chapter } from "../types";
-import { Compass, Eye, EyeOff, List, Menu, ChevronRight } from "lucide-react";
+import { Compass, Eye, EyeOff, Menu, ChevronRight } from "lucide-react";
 
 interface SidebarProps {
   chapters: Chapter[];
@@ -26,17 +26,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isOpenMobile, setIsOpenMobile] = useState(false);
 
   useEffect(() => {
-    // Keep current chapter expanded
-    if (activeStateChapterId) {
-      setExpanded(activeState => ({ ...activeState, [activeStateChapterId]: true }));
+    if (activeChapterId) {
+      setExpandedChapters((prev) => ({ ...prev, [activeChapterId]: true }));
     }
   }, [activeChapterId]);
-
-  const setExpanded = (fn: (prev: Record<string, boolean>) => Record<string, boolean>) => {
-    setExpandedChapters((prev) => fn(prev));
-  };
-
-  const activeStateChapterId = activeChapterId;
 
   const toggleChapter = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -54,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             id="mobile-toggle-btn"
             onClick={() => setIsOpenMobile(!isOpenMobile)}
-            className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500 text-slate-950 font-bold shadow-lg shadow-cyan-500/20 active:scale-95 transition-transform"
+            className="flex items-center justify-center w-12 h-12 rounded bg-earth-walnut text-earth-sage font-bold shadow border border-earth-clay/20 active:scale-95 transition-transform"
           >
             {isOpenMobile ? <EyeOff size={20} /> : <Menu size={20} />}
           </button>
@@ -66,16 +59,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <button
           id="immersive-toggle-btn"
           onClick={() => setIsImmersive(!isImmersive)}
-          className={`flex items-center space-x-2 px-3 py-1.5 rounded-lg border text-xs font-mono transition-all duration-300 backdrop-blur-md ${
+          className={`flex items-center space-x-2 px-3 py-1.5 rounded border text-xs font-mono transition-all duration-300 backdrop-blur-md ${
             isImmersive
-              ? "bg-slate-950/80 border-emerald-500/50 text-emerald-400 shadow-lg shadow-emerald-500/10"
-              : "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-400/40"
+              ? "bg-earth-dark/90 border-earth-sage/30 text-earth-sage shadow-md"
+              : "bg-earth-walnut/60 border-earth-clay/15 text-earth-sand/50 hover:text-earth-sage hover:border-earth-sage/30"
           }`}
           title={isImmersive ? "Exit Immersive Mode" : "Activate Immersive Mode"}
         >
           {isImmersive ? (
             <>
-              <EyeOff size={14} className="animate-pulse" />
+              <EyeOff size={14} />
               <span>IMMERSIVE ON</span>
             </>
           ) : (
@@ -95,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpenMobile(false)}
-            className="lg:hidden fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm"
+            className="lg:hidden fixed inset-0 z-40 bg-earth-dark/80 backdrop-blur-sm"
           >
             <motion.div
               initial={{ x: "-100%" }}
@@ -103,12 +96,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
               exit={{ x: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 220 }}
               onClick={(e) => e.stopPropagation()}
-              className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-[#0B0F19]/90 border-r border-white/10 backdrop-blur-xl p-6 overflow-y-auto"
+              className="absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] bg-earth-walnut/95 border-r border-earth-clay/10 backdrop-blur-xl p-6 overflow-y-auto"
             >
-              <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-white/10">
-                <Compass className="text-[#00F2FE] animate-spin-slow" size={22} />
-                <h3 className="font-mono text-sm font-semibold tracking-wider text-white">
-                  CONSCIOUSNESS CORE
+              <div className="flex items-center space-x-3 mb-6 pb-4 border-b border-earth-clay/10">
+                <Compass className="text-earth-sage" size={20} />
+                <h3 className="font-mono text-xs font-semibold tracking-wider text-earth-parchment">
+                  MANUSCRIPT MODULES
                 </h3>
               </div>
               <nav className="space-y-4">
@@ -118,15 +111,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onClick={() => onNavigate(ch.sections[0].id)}
                       className={`flex items-center justify-between w-full text-left font-mono text-xs py-1.5 px-2 rounded transition-colors ${
                         activeChapterId === ch.id
-                          ? "text-[#00F2FE] bg-[#00F2FE]/10 border border-[#00F2FE]/10 font-bold"
-                          : "text-slate-400 hover:text-slate-200"
+                          ? "text-earth-sage bg-earth-moss/20 border border-earth-sage/10 font-bold"
+                          : "text-earth-sand/60 hover:text-earth-parchment"
                       }`}
                     >
                       <span className="truncate">
                         CH {ch.number}: {ch.title}
                       </span>
                     </button>
-                    <div className="pl-4 border-l border-white/10 space-y-1 mt-1">
+                    <div className="pl-4 border-l border-earth-clay/10 space-y-1 mt-1">
                       {ch.sections.map((sec) => (
                         <button
                           key={sec.id}
@@ -136,8 +129,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           }}
                           className={`block w-full text-left text-[11px] font-sans py-1 transition-all ${
                             activeSectionId === sec.id
-                              ? "text-[#00F2FE] font-medium pl-1 border-l-2 border-[#00F2FE] shadow-[0_0_8px_rgba(0,242,254,0.1)]"
-                              : "text-slate-500 hover:text-slate-300"
+                              ? "text-earth-sage font-medium pl-1 border-l-2 border-earth-sage"
+                              : "text-earth-sand/40 hover:text-earth-sand"
                           }`}
                         >
                           {sec.title}
@@ -160,18 +153,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
             animate={{ width: "24rem", opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block shrink-0 sticky top-0 h-screen bg-white/5 border-r border-white/10 backdrop-blur-xl overflow-y-auto select-none p-6 z-20"
+            className="hidden lg:block shrink-0 sticky top-0 h-screen bg-earth-walnut/90 border-r border-earth-clay/15 backdrop-blur-xl overflow-y-auto select-none p-6 z-20"
           >
-            <div className="flex items-center space-x-3 mb-8 pb-4 border-b border-white/10">
-              <div className="p-1.5 rounded-lg bg-[#00F2FE]/10 border border-[#00F2FE]/20">
-                <Compass className="text-[#00F2FE] animate-spin-slow" size={18} />
+            <div className="flex items-center space-x-3 mb-8 pb-4 border-b border-earth-clay/10">
+              <div className="p-1.5 rounded bg-earth-forest/20 border border-earth-moss/20">
+                <Compass className="text-earth-sage" size={16} />
               </div>
               <div className="flex flex-col">
-                <span className="font-mono text-[10px] text-[#00F2FE]/70 tracking-widest font-semibold uppercase">
-                  Research Dashboard
+                <span className="font-mono text-[9px] text-earth-sage/70 tracking-widest font-semibold uppercase">
+                  Research Manuscript
                 </span>
-                <span className="font-mono text-xs font-bold text-white tracking-wider">
-                  CONSCIOUSNESS_CORE_v1.0
+                <span className="font-mono text-xs font-bold text-earth-parchment tracking-wider">
+                  CONSCIOUSNESS READER
                 </span>
               </div>
             </div>
@@ -184,22 +177,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 return (
                   <div
                     key={ch.id}
-                    className={`rounded-lg border transition-all duration-300 ${
+                    className={`rounded border transition-all duration-300 ${
                       isActive
-                        ? "bg-white/5 border-white/10 shadow-md shadow-black/20"
+                        ? "bg-earth-forest/10 border-earth-clay/10"
                         : "border-transparent bg-transparent"
                     }`}
                   >
                     <div
                       onClick={() => onNavigate(ch.sections[0].id)}
-                      className="group flex items-center justify-between w-full py-2.5 px-3 rounded-lg cursor-pointer transition-colors"
+                      className="group flex items-center justify-between w-full py-2.5 px-3 rounded cursor-pointer transition-colors"
                     >
                       <div className="flex items-center space-x-2.5 text-left truncate">
                         <span
                           className={`font-mono text-[10px] px-1.5 py-0.5 rounded border transition-colors ${
                             isActive
-                              ? "bg-[#00F2FE]/10 border-[#00F2FE]/30 text-[#00F2FE] shadow-[0_0_8px_rgba(0,242,254,0.15)]"
-                              : "bg-white/5 border-white/5 text-slate-400 group-hover:text-slate-300"
+                              ? "bg-earth-moss/20 border-earth-sage/30 text-earth-sage shadow-sm"
+                              : "bg-earth-dark/40 border border-earth-clay/10 text-earth-sand/50 group-hover:text-earth-sand"
                           }`}
                         >
                           CH_0{ch.number}
@@ -207,8 +200,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <span
                           className={`font-sans text-xs font-semibold tracking-wide transition-colors ${
                             isActive
-                              ? "text-white"
-                              : "text-slate-400 group-hover:text-slate-200"
+                              ? "text-earth-parchment"
+                              : "text-earth-sand/60 group-hover:text-earth-sand"
                           }`}
                         >
                           {ch.title}
@@ -217,10 +210,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                       <button
                         onClick={(e) => toggleChapter(ch.id, e)}
-                        className={`p-1 rounded-md transition-all duration-300 ${
+                        className={`p-1 rounded transition-all duration-300 ${
                           isActive
-                            ? "text-[#00F2FE]/80 hover:bg-white/5"
-                            : "text-slate-600 hover:text-slate-400"
+                            ? "text-earth-sage/80 hover:bg-earth-dark/30"
+                            : "text-earth-sand/40 hover:text-earth-sand/60"
                         }`}
                       >
                         <ChevronRight
@@ -242,7 +235,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           transition={{ duration: 0.25, ease: "easeInOut" }}
                           className="overflow-hidden"
                         >
-                          <div className="pl-5 pr-3 pb-3 border-l border-white/5 ml-[18px] space-y-1 mt-0.5">
+                          <div className="pl-5 pr-3 pb-3 border-l border-earth-clay/10 ml-[18px] space-y-1 mt-0.5">
                             {ch.sections.map((sec) => {
                               const isSecActive = activeSectionId === sec.id;
                               return (
@@ -251,8 +244,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                   onClick={() => onNavigate(sec.id)}
                                   className={`block w-full text-left text-[11px] font-mono leading-relaxed py-1.5 px-2.5 rounded transition-all duration-200 truncate ${
                                     isSecActive
-                                      ? "text-[#00F2FE] bg-[#00F2FE]/5 border border-[#00F2FE]/10 shadow-[0_0_8px_rgba(0,242,254,0.05)] font-bold"
-                                      : "text-slate-400 hover:text-slate-200 border border-transparent"
+                                      ? "text-earth-sage bg-earth-forest/10 border border-earth-moss/20 font-bold shadow-sm"
+                                      : "text-earth-sand/50 hover:text-earth-sand/80 border border-transparent"
                                   }`}
                                 >
                                   {sec.title}
@@ -268,20 +261,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
               })}
             </nav>
 
-            {/* Ambient telemetry indicators in sidebar footer */}
-            <div className="absolute bottom-6 left-6 right-6 font-mono text-[9px] text-slate-500 space-y-1 pointer-events-none">
-              <div className="h-px bg-white/10 my-2" />
-              <div className="flex justify-between">
-                <span>SIGNAL CAPTURE</span>
-                <span className="text-[#00F2FE] font-bold">ACTIVE [125 Gb/s]</span>
-              </div>
-              <div className="flex justify-between">
-                <span>MEM_ENCODING</span>
-                <span className="text-[#4FACFE] font-bold">COGNITIVE_PROSTHESIS</span>
-              </div>
-              <div className="flex justify-between">
-                <span>DECODER_MODEL</span>
-                <span className="text-[#00F2FE]/80">LLM_TRANSFORMER_V4</span>
+            {/* Silent Academic Credit Line inside Sidebar Footer */}
+            <div className="absolute bottom-6 left-6 right-6 font-mono text-[9px] text-earth-sand/30 space-y-1 pointer-events-none">
+              <div className="h-px bg-earth-clay/10 my-2" />
+              <div className="flex justify-between items-center text-[10px]">
+                <span>IIT Madras Scholar Series</span>
+                <span>Soumya Ranjan Bhujabal</span>
               </div>
             </div>
           </motion.aside>

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Activity, Shield, Cpu, RefreshCw, Layers, ArrowRight } from "lucide-react";
+import { Activity, Shield, Cpu, RefreshCw, Layers } from "lucide-react";
 
 // =========================================================
 // 1. 3D Global Workspace Theory Connectome (Canvas-Projected)
@@ -100,22 +100,8 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
     { from: "mot-1", to: "mot-2", weight: 0.5 }
   ]);
 
-  // Resize handler
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  let waveOffset = 0;
 
-    const updateSize = () => {
-      canvas.width = containerRef.current?.clientWidth || 500;
-      canvas.height = containerRef.current?.clientHeight || 340;
-    };
-
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-
-  // Main rendering loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -123,34 +109,27 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
     if (!ctx) return;
 
     let animationId: number;
-    let waveOffset = 0;
 
     const render = () => {
-      const width = canvas.width;
-      const height = canvas.height;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+
+      if (canvas.width !== width || canvas.height !== height) {
+        canvas.width = width;
+        canvas.height = height;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
       const centerX = width / 2;
       const centerY = height / 2;
 
-      // Clear canvas
-      ctx.fillStyle = "rgba(4, 8, 16, 0.45)"; // ambient glow retention
+      // Draw subtle background radial gradient
+      const bgGrad = ctx.createRadialGradient(centerX, centerY, 20, centerX, centerY, width / 1.5);
+      bgGrad.addColorStop(0, "rgba(50, 45, 40, 0.15)");
+      bgGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
-
-      // Draw faint cybernetic background grid
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.02)";
-      ctx.lineWidth = 1;
-      const gridSize = 40;
-      for (let x = 0; x < width; x += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, height);
-        ctx.stroke();
-      }
-      for (let y = 0; y < height; y += gridSize) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(width, y);
-        ctx.stroke();
-      }
 
       // Rotate angles automatically if active
       if (isRotating && !isMouseDown.current) {
@@ -192,27 +171,23 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
           py,
           depth: z2,
           scale,
-          // Module focus filter logic
           active: activeModuleFocus === "all" || node.module === activeModuleFocus || node.module === "prefrontal"
         };
       });
 
-      // Sort nodes and draw connections first (painter's algorithm)
-      // Draw Connections
+      // Sort nodes and draw connections first
       connectionsRef.current.forEach((conn) => {
         const fromNode = nodes.find((n) => n.id === conn.from);
         const toNode = nodes.find((n) => n.id === conn.to);
 
         if (!fromNode || !toNode) return;
 
-        // Determine path activity based on connection density / coupling
         const isPathFocused =
           (activeModuleFocus === "all" ||
             fromNode.module === activeModuleFocus ||
             toNode.module === activeModuleFocus) &&
           (fromNode.active && toNode.active);
 
-        // Interpolate colors based on module and depth
         const avgDepth = (fromNode.depth + toNode.depth) / 2;
         const opacity = Math.max(0.05, Math.min(0.7, (1.0 - (avgDepth + 1.2) / 2.4))) * (isPathFocused ? 1.0 : 0.15);
 
@@ -220,12 +195,12 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
         ctx.moveTo(fromNode.px, fromNode.py);
         ctx.lineTo(toNode.px, toNode.py);
 
-        // Highlight connections between workspace prefrontal core and other modules
+        // Highlight connections between workspace prefrontal core and other modules with beautiful sage green
         if (fromNode.module === "prefrontal" && toNode.module !== "prefrontal" && isPathFocused) {
-          ctx.strokeStyle = `rgba(0, 242, 254, ${opacity * (coupling / 100)})`;
-          ctx.lineWidth = 1.8;
+          ctx.strokeStyle = `rgba(146, 168, 142, ${opacity * (coupling / 100)})`;
+          ctx.lineWidth = 1.5;
         } else {
-          ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.4})`;
+          ctx.strokeStyle = `rgba(207, 189, 168, ${opacity * 0.35})`;
           ctx.lineWidth = 0.8;
         }
         ctx.stroke();
@@ -235,52 +210,46 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
           const speed = 0.015 * frequency;
           const pos = (waveOffset * speed) % 1.0;
 
-          // Draw floating signal packet on connecting fibers
           const waveX = fromNode.px + (toNode.px - fromNode.px) * pos;
           const waveY = fromNode.py + (toNode.py - fromNode.py) * pos;
 
           ctx.beginPath();
           ctx.arc(waveX, waveY, 2.5, 0, 2 * Math.PI);
-          ctx.fillStyle = "#00F2FE";
-          ctx.shadowColor = "#00F2FE";
-          ctx.shadowBlur = 8;
+          ctx.fillStyle = "#92a88e"; // beautiful sage green signal pulse
           ctx.fill();
-          ctx.shadowBlur = 0; // reset shadow
         }
       });
 
-      // Sort nodes back-to-front for rendering overlapping nodes cleanly
+      // Sort nodes back-to-front
       const sortedNodes = [...nodes].sort((a, b) => b.depth - a.depth);
 
       // Draw Nodes
       sortedNodes.forEach((node) => {
-        // Calculate node color based on category and active focus
-        let color = "rgba(226, 232, 240, 0.4)"; // default slate
-        let glowColor = "rgba(255, 255, 255, 0.2)";
+        let color = "rgba(140, 125, 112, 0.4)"; // default slate walnut
+        let glowColor = "rgba(207, 189, 168, 0.15)";
 
         if (node.active) {
           if (node.module === "prefrontal") {
-            color = "#F59E0B"; // Amber workspace center
-            glowColor = "rgba(245, 158, 11, 0.4)";
+            color = "#92a88e"; // Soft moss/sage workspace center
+            glowColor = "rgba(146, 168, 142, 0.4)";
           } else if (node.module === "sensory") {
-            color = "#00F2FE"; // Cyan sensory nodes
-            glowColor = "rgba(0, 242, 254, 0.4)";
+            color = "#cfbda8"; // Warm sand sensory nodes
+            glowColor = "rgba(207, 189, 168, 0.3)";
           } else if (node.module === "memory") {
-            color = "#EC4899"; // Pink memory nodes
-            glowColor = "rgba(236, 72, 153, 0.4)";
+            color = "#8c7d70"; // Wood brown memory nodes
+            glowColor = "rgba(140, 125, 112, 0.3)";
           } else if (node.module === "evaluation") {
-            color = "#8B5CF6"; // Purple attention nodes
-            glowColor = "rgba(139, 92, 246, 0.4)";
+            color = "#708272"; // Dark forest sage attention nodes
+            glowColor = "rgba(112, 130, 114, 0.3)";
           } else if (node.module === "motor") {
-            color = "#10B981"; // Emerald action nodes
-            glowColor = "rgba(16, 185, 129, 0.4)";
+            color = "#cf7d61"; // Clay terracotta action nodes
+            glowColor = "rgba(207, 125, 97, 0.3)";
           }
         } else {
-          color = "rgba(71, 85, 105, 0.2)"; // De-emphasized state
+          color = "rgba(140, 125, 112, 0.15)"; // De-emphasized state
           glowColor = "transparent";
         }
 
-        // Draw node glow ring
         const nodeSize = node.size * (node.scale / 120);
         const isHovered = hoveredNode && hoveredNode.id === node.id;
 
@@ -289,11 +258,10 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
         ctx.fillStyle = glowColor;
         ctx.fill();
 
-        // Draw solid core node
         ctx.beginPath();
         ctx.arc(node.px, node.py, nodeSize * (isHovered ? 1.3 : 1.0), 0, 2 * Math.PI);
         ctx.fillStyle = color;
-        ctx.strokeStyle = "#040810";
+        ctx.strokeStyle = "#1b1411";
         ctx.lineWidth = 1;
         ctx.fill();
         ctx.stroke();
@@ -303,7 +271,7 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
           const pulseRadius = nodeSize * (1.5 + Math.sin(waveOffset * 0.1) * 1.5);
           ctx.beginPath();
           ctx.arc(node.px, node.py, pulseRadius, 0, 2 * Math.PI);
-          ctx.strokeStyle = "rgba(245, 158, 11, 0.2)";
+          ctx.strokeStyle = "rgba(146, 168, 142, 0.2)";
           ctx.lineWidth = 1;
           ctx.stroke();
         }
@@ -333,25 +301,20 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
     const mouseY = e.clientY - rect.top;
 
     if (isMouseDown.current) {
-      // Rotate based on dragging displacement
       const deltaX = e.clientX - lastMousePos.current.x;
       const deltaY = e.clientY - lastMousePos.current.y;
 
       angleYRef.current += deltaX * 0.007;
       angleXRef.current += deltaY * 0.007;
 
-      // clamp X to prevent flipping completely upsidedown
       angleXRef.current = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, angleXRef.current));
 
       lastMousePos.current = { x: e.clientX, y: e.clientY };
     } else {
-      // Node Hover detection
       let foundNode: NodeGWT | null = null;
       const threshold = 14;
 
       nodesRef.current.forEach((node) => {
-        // We use the projected coordinate of the last frame stored in coordinates
-        // Calculate coordinate relative to canvas bounds
         const dx = mouseX - node.px;
         const dy = mouseY - node.py;
         const distance = Math.sqrt(dx * dx + dy * dy);
@@ -370,17 +333,17 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
   };
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-5 md:p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+    <div className="w-full rounded border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-xl shadow p-5 md:p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-earth-clay/10 pb-4">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400">
+          <div className="p-2 bg-earth-forest/20 border border-earth-moss/20 rounded text-earth-sage">
             <Activity size={16} className="animate-pulse" />
           </div>
           <div>
-            <span className="font-mono text-[9px] text-amber-500 tracking-wider font-bold block uppercase">
+            <span className="font-mono text-[9px] text-earth-sage tracking-wider font-bold block uppercase">
               COGNITIVE SIMULATION ENGINE
             </span>
-            <h4 className="font-sans text-sm font-extrabold text-white tracking-wide">
+            <h4 className="font-sans text-sm font-extrabold text-earth-parchment tracking-wide">
               Global Workspace Broadcast Network (3D GWT)
             </h4>
           </div>
@@ -388,15 +351,15 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
 
         {/* Focus Controller */}
         <div className="flex items-center space-x-1.5 self-start md:self-center">
-          <span className="font-mono text-[10px] text-slate-500 mr-1.5">NETWORK FOCUS:</span>
+          <span className="font-mono text-[10px] text-earth-sand/40 mr-1.5">NETWORK FOCUS:</span>
           {["all", "sensory", "memory", "evaluation", "motor"].map((m) => (
             <button
               key={m}
               onClick={() => setActiveModuleFocus(m)}
               className={`px-2.5 py-1 rounded font-mono text-[9px] font-bold border transition-all uppercase ${
                 activeModuleFocus === m
-                  ? "bg-[#00F2FE]/10 border-[#00F2FE]/30 text-[#00F2FE] shadow-[0_0_8px_rgba(0,242,254,0.1)]"
-                  : "bg-white/5 border-transparent text-slate-400 hover:text-slate-200"
+                  ? "bg-earth-forest/20 border-earth-moss/30 text-earth-sage shadow-sm"
+                  : "bg-earth-dark/40 border-earth-clay/15 text-earth-sand/50 hover:text-earth-sand"
               }`}
             >
               {m}
@@ -409,7 +372,7 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
         {/* Interactive 3D Canvas Projection */}
         <div
           ref={containerRef}
-          className="lg:col-span-2 relative h-[300px] md:h-[340px] w-full rounded-xl border border-white/5 bg-black/60 overflow-hidden cursor-grab active:cursor-grabbing select-none"
+          className="lg:col-span-2 relative h-[300px] md:h-[340px] w-full rounded border border-earth-clay/10 bg-earth-dark/60 overflow-hidden cursor-grab active:cursor-grabbing select-none"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUpOrLeave}
@@ -417,34 +380,34 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
         >
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
 
-          {/* User tips and telemetry status overlay */}
-          <div className="absolute top-3 left-3 pointer-events-none font-mono text-[8px] text-slate-500 space-y-1">
+          {/* User tips overlay */}
+          <div className="absolute top-3 left-3 pointer-events-none font-mono text-[8px] text-earth-sand/30 space-y-1">
             <div className="flex items-center space-x-1.5">
-              <span className={`w-1.5 h-1.5 rounded-full ${isRotating ? "bg-amber-400 animate-ping" : "bg-red-500"}`} />
+              <span className={`w-1.5 h-1.5 rounded-full ${isRotating ? "bg-earth-sage animate-ping" : "bg-earth-bark"}`} />
               <span className="font-bold">STATUS: {isRotating ? "AUTOROTATING" : "MANUAL_ROTATION"}</span>
             </div>
             <div>PROJECTION: PERSPECTIVE_3D_MATRIX</div>
           </div>
 
-          <div className="absolute bottom-3 right-3 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-1 px-2 rounded border border-white/5">
+          <div className="absolute bottom-3 right-3 pointer-events-none font-mono text-[8px] text-earth-sand/30 bg-earth-dark/50 py-1 px-2 rounded border border-earth-clay/10">
             DRAG MOUSE TO ROTATE • HOVER COGNITIVE NODES
           </div>
 
           {/* Node details overlay on hover */}
           {hoveredNode && (
-            <div className="absolute bottom-3 left-3 max-w-[240px] bg-black/90 border border-[#00F2FE]/30 rounded-lg p-2.5 shadow-xl pointer-events-none font-mono text-[9px] text-slate-300 space-y-1 animate-fade-in">
-              <div className="flex justify-between font-bold text-[#00F2FE]">
+            <div className="absolute bottom-3 left-3 max-w-[240px] bg-earth-dark/95 border border-earth-moss/30 rounded p-2.5 shadow-xl pointer-events-none font-mono text-[9px] text-earth-sand/90 space-y-1">
+              <div className="flex justify-between font-bold text-earth-sage">
                 <span>{hoveredNode.name.toUpperCase()}</span>
-                <span className="text-[8px] bg-[#00F2FE]/10 px-1 rounded uppercase">{hoveredNode.module}</span>
+                <span className="text-[8px] bg-earth-forest/20 border border-earth-moss/20 px-1 rounded uppercase text-earth-sage">{hoveredNode.module}</span>
               </div>
-              <p className="font-sans text-[10px] text-slate-400 leading-normal">
+              <p className="font-sans text-[10px] text-earth-sand/70 leading-normal">
                 {hoveredNode.module === "prefrontal" && "A component of the central workspace gateway, facilitating global coordination and information integration across specialized cortical networks."}
                 {hoveredNode.module === "sensory" && "Receives raw physical signals (vision, acoustics, touch), preparing cortical packets for workspace entry."}
                 {hoveredNode.module === "memory" && "Saves and recovers episodic structures. Under workspace focus, broadcasts autobiographical frames."}
                 {hoveredNode.module === "evaluation" && "Modulates attentional bandwidth. Highlights critical survival alerts for workspace prioritization."}
                 {hoveredNode.module === "motor" && "Translates global conscious intentions into structural physical actions, driving biological musculature."}
               </p>
-              <div className="text-[8px] text-slate-500 text-right pt-0.5 border-t border-white/5">
+              <div className="text-[8px] text-earth-sand/40 text-right pt-0.5 border-t border-earth-clay/10">
                 3D COORD: {hoveredNode.x.toFixed(2)}, {hoveredNode.y.toFixed(2)}, {hoveredNode.z.toFixed(2)}
               </div>
             </div>
@@ -455,22 +418,22 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
         <div className="flex flex-col justify-between space-y-5">
           <div className="space-y-4 font-sans">
             <div>
-              <h5 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center">
-                <Layers size={12} className="text-amber-500 mr-1.5" />
+              <h5 className="text-xs font-bold text-earth-parchment uppercase tracking-wider mb-1.5 flex items-center">
+                <Layers size={12} className="text-earth-sage mr-1.5" />
                 Workspace Mechanics
               </h5>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Global Workspace Theory (GWT) posits that consciousness acts as a "theater of the mind." Sub-cognitive processes run silently in the background, but when information enters the central workspace hub (amber), it is **globally broadcast** (the pulses you see) to all modules, creating unified awareness.
+              <p className="text-xs text-earth-sand/70 leading-relaxed">
+                Global Workspace Theory (GWT) posits that consciousness acts as a "theater of the mind." Sub-cognitive processes run silently in the background, but when information enters the central workspace hub (sage), it is **globally broadcast** (the pulses you see) to all modules, creating unified awareness.
               </p>
             </div>
 
             {/* Adjustable Sliders */}
-            <div className="space-y-3 pt-3 border-t border-white/5 font-mono text-[10px]">
+            <div className="space-y-3 pt-3 border-t border-earth-clay/10 font-mono text-[10px]">
               {/* Slider 1: Broadcast Frequency */}
               <div className="space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">BROADCAST RATIO (HZ)</span>
-                  <span className="text-amber-400 font-bold">{frequency} Hz (Theta-Alpha)</span>
+                  <span className="text-earth-sand/40 font-bold">BROADCAST RATIO</span>
+                  <span className="text-earth-sage font-bold">{frequency} Hz (Theta-Alpha)</span>
                 </div>
                 <input
                   type="range"
@@ -478,15 +441,15 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
                   max="10"
                   value={frequency}
                   onChange={(e) => setFrequency(parseInt(e.target.value))}
-                  className="w-full accent-amber-500 h-1 bg-white/10 rounded-lg cursor-pointer"
+                  className="w-full accent-earth-sage h-1 bg-earth-dark/40 rounded-lg cursor-pointer"
                 />
               </div>
 
               {/* Slider 2: Synaptic Coupling */}
               <div className="space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">SYNAPTIC INTEGRATION</span>
-                  <span className="text-[#00F2FE] font-bold">{coupling}% COUPLING</span>
+                  <span className="text-earth-sand/40 font-bold">SYNAPTIC INTEGRATION</span>
+                  <span className="text-earth-bark font-bold">{coupling}% COUPLING</span>
                 </div>
                 <input
                   type="range"
@@ -494,27 +457,27 @@ export const GlobalWorkspaceBroadcast3D: React.FC = () => {
                   max="100"
                   value={coupling}
                   onChange={(e) => setCoupling(parseInt(e.target.value))}
-                  className="w-full accent-[#00F2FE] h-1 bg-white/10 rounded-lg cursor-pointer"
+                  className="w-full accent-earth-bark h-1 bg-earth-dark/40 rounded-lg cursor-pointer"
                 />
               </div>
             </div>
           </div>
 
-          <div className="space-y-2 border-t border-white/5 pt-3">
+          <div className="space-y-2 border-t border-earth-clay/10 pt-3">
             <button
               onClick={() => setIsRotating(!isRotating)}
-              className={`w-full py-2 px-3 rounded-lg font-mono text-[10px] font-bold border transition-all flex items-center justify-center space-x-2 ${
+              className={`w-full py-2 px-3 rounded font-mono text-[10px] font-bold border transition-all flex items-center justify-center space-x-2 ${
                 isRotating
-                  ? "bg-amber-500/10 border-amber-500/20 text-amber-400"
-                  : "bg-white/5 border-white/10 text-slate-400 hover:text-slate-200"
+                  ? "bg-earth-forest/20 border-earth-moss/20 text-earth-sage"
+                  : "bg-earth-dark/40 border-earth-clay/20 text-earth-sand/50 hover:text-earth-sand"
               }`}
             >
               <RefreshCw size={11} className={isRotating ? "animate-spin-slow" : ""} />
               <span>{isRotating ? "HALT ENGINE AUTOROTATION" : "ENGAGE DEVIATION ROTATION"}</span>
             </button>
 
-            <div className="flex items-center space-x-1.5 p-2 bg-[#0B0F19]/60 border border-white/5 rounded-lg font-sans text-[10px] text-slate-500">
-              <Shield size={12} className="text-emerald-500 shrink-0" />
+            <div className="flex items-center space-x-1.5 p-2 bg-earth-dark/50 border border-earth-clay/10 rounded font-sans text-[10px] text-earth-sand/50">
+              <Shield size={12} className="text-earth-sage shrink-0" />
               <span>GWT is backed by modern imaging showing high-amplitude frontoparietal synchronization during conscious processing.</span>
             </div>
           </div>
@@ -535,7 +498,6 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
   const [hoveredLayer, setHoveredLayer] = useState<string | null>(null);
   const [pulseSignal, setPulseSignal] = useState<boolean>(true);
 
-  // Periodic visual signal pulse
   useEffect(() => {
     const timer = setInterval(() => {
       setPulseSignal(prev => !prev);
@@ -543,24 +505,22 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Calculate 3D offset translations based on exploded view and synthesis ratio
   const translateDistance = exploded ? 40 : 15;
-  // If synthesisRatio increases, layer depths merge closer physically
   const separationFactor = 1.0 - (synthesisRatio / 100) * 0.7;
   const currentSeparation = translateDistance * separationFactor;
 
   return (
-    <div className="w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl p-5 md:p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
+    <div className="w-full rounded border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-xl shadow p-5 md:p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-earth-clay/10 pb-4">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-[#00F2FE]/10 border border-[#00F2FE]/30 rounded-lg text-[#00F2FE]">
+          <div className="p-2 bg-earth-forest/20 border border-earth-moss/20 rounded text-earth-sage">
             <Cpu size={16} />
           </div>
           <div>
-            <span className="font-mono text-[9px] text-[#00F2FE] tracking-wider font-bold block uppercase">
+            <span className="font-mono text-[9px] text-earth-sage tracking-wider font-bold block uppercase">
               INTERFACE HARDWARE TRANSDUCTION
             </span>
-            <h4 className="font-sans text-sm font-extrabold text-white tracking-wide">
+            <h4 className="font-sans text-sm font-extrabold text-earth-parchment tracking-wide">
               Carbon-Silicon Synaptic Junction (CSS 3D)
             </h4>
           </div>
@@ -571,8 +531,8 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
             onClick={() => setExploded(!exploded)}
             className={`py-1 px-3 rounded font-mono text-[9px] font-bold border transition-all ${
               exploded
-                ? "bg-[#00F2FE]/15 border-[#00F2FE]/30 text-[#00F2FE]"
-                : "bg-white/5 border-white/10 text-slate-400 hover:text-slate-200"
+                ? "bg-earth-forest/20 border-earth-moss/30 text-earth-sage"
+                : "bg-earth-dark/40 border-earth-clay/15 text-earth-sand/50 hover:text-earth-sand"
             }`}
           >
             {exploded ? "COMPACT STRUCTURAL RATIO" : "EXPLODE 3D STACK"}
@@ -583,12 +543,10 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-center">
         {/* The 3D Render Canvas Box using pure CSS 3D perspectives */}
         <div 
-          className="lg:col-span-3 h-80 relative rounded-xl border border-white/5 bg-black/60 overflow-hidden flex items-center justify-center select-none group"
+          className="lg:col-span-3 h-80 relative rounded border border-earth-clay/10 bg-earth-dark/60 overflow-hidden flex items-center justify-center select-none group"
           style={{ perspective: "1000px" }}
         >
-          
-          {/* Subtle grid backdrop */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,242,254,0.06),transparent_70%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(146,168,142,0.06),transparent_70%)] pointer-events-none" />
 
           {/* Isometric rotated frame */}
           <div 
@@ -602,10 +560,10 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
             <div 
               onMouseEnter={() => setHoveredLayer("silicon")}
               onMouseLeave={() => setHoveredLayer(null)}
-              className={`absolute inset-0 bg-cyan-950/20 border-2 rounded-xl transition-all duration-[800ms] cursor-help p-4 flex flex-col justify-between overflow-hidden shadow-[0_0_20px_rgba(0,242,254,0.15)] ${
+              className={`absolute inset-0 bg-earth-forest/10 border-2 rounded transition-all duration-[800ms] cursor-help p-4 flex flex-col justify-between overflow-hidden shadow ${
                 hoveredLayer === "silicon" 
-                  ? "border-[#00F2FE] bg-cyan-950/40 shadow-[0_0_35px_rgba(0,242,254,0.3)] scale-[1.02]" 
-                  : "border-[#00F2FE]/30"
+                  ? "border-earth-sage bg-earth-forest/25 scale-[1.02]" 
+                  : "border-earth-moss/20"
               }`}
               style={{
                 transform: `translateZ(${currentSeparation * 2}px)`,
@@ -613,26 +571,26 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
               }}
             >
               {/* Technical background grids */}
-              <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-1 opacity-20 p-2">
+              <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-1 opacity-25 p-2">
                 {Array.from({ length: 16 }).map((_, i) => (
-                  <div key={i} className="border border-[#00F2FE] rounded-sm flex items-center justify-center">
-                    <span className={`w-1 h-1 rounded-full bg-[#00F2FE] ${pulseSignal ? "animate-ping" : ""}`} />
+                  <div key={i} className="border border-earth-moss/20 rounded-sm flex items-center justify-center">
+                    <span className={`w-1 h-1 rounded-full bg-earth-sage ${pulseSignal ? "animate-ping" : ""}`} />
                   </div>
                 ))}
               </div>
 
               {/* Laser signal trace lines overlay */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
-                <path d="M0,40 L60,40 L100,80 L200,80" stroke="#00F2FE" strokeWidth="1" fill="none" className="stroke-dash" />
-                <path d="M240,160 L180,160 L140,200 L40,200" stroke="#00F2FE" strokeWidth="1" fill="none" className="stroke-dash" />
+                <path d="M0,40 L60,40 L100,80 L200,80" stroke="#92a88e" strokeWidth="1" fill="none" />
+                <path d="M240,160 L180,160 L140,200 L40,200" stroke="#92a88e" strokeWidth="1" fill="none" />
               </svg>
 
-              <div className="flex justify-between items-start font-mono text-[8px] text-[#00F2FE] font-bold z-10" style={{ transform: "translateZ(10px)" }}>
+              <div className="flex justify-between items-start font-mono text-[8px] text-earth-sage font-bold z-10" style={{ transform: "translateZ(10px)" }}>
                 <span>DECODER MATRIX [Si]</span>
                 <span>Z_03</span>
               </div>
 
-              <div className="flex justify-between items-end font-mono text-[7px] text-slate-500 z-10" style={{ transform: "translateZ(10px)" }}>
+              <div className="flex justify-between items-end font-mono text-[7px] text-earth-sand/40 z-10" style={{ transform: "translateZ(10px)" }}>
                 <span>BANDWIDTH: 10,000 HZ</span>
                 <span>32-CH PROBES</span>
               </div>
@@ -642,33 +600,31 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
             <div 
               onMouseEnter={() => setHoveredLayer("hydrogel")}
               onMouseLeave={() => setHoveredLayer(null)}
-              className={`absolute inset-0 bg-amber-950/10 border-2 rounded-xl transition-all duration-[800ms] cursor-help p-4 flex flex-col justify-between overflow-hidden shadow-[0_0_15px_rgba(245,158,11,0.05)] ${
+              className={`absolute inset-0 bg-earth-clay/5 border-2 rounded transition-all duration-[800ms] cursor-help p-4 flex flex-col justify-between overflow-hidden shadow ${
                 hoveredLayer === "hydrogel" 
-                  ? "border-amber-400 bg-amber-950/30 shadow-[0_0_25px_rgba(245,158,11,0.2)]" 
-                  : "border-amber-500/20"
+                  ? "border-earth-bark bg-earth-clay/15" 
+                  : "border-earth-clay/20"
               }`}
               style={{
                 transform: `translateZ(${currentSeparation}px)`,
                 transformStyle: "preserve-3d"
               }}
             >
-              {/* Semi-transparent pattern */}
-              <div className="absolute inset-0 opacity-15" style={{ backgroundImage: "radial-gradient(circle, #f59e0b 1px, transparent 1px)", backgroundSize: "12px 12px" }} />
+              <div className="absolute inset-0 opacity-15" style={{ backgroundImage: "radial-gradient(circle, #cf7d61 1px, transparent 1px)", backgroundSize: "12px 12px" }} />
 
-              <div className="flex justify-between items-start font-mono text-[8px] text-amber-500 font-bold z-10" style={{ transform: "translateZ(5px)" }}>
+              <div className="flex justify-between items-start font-mono text-[8px] text-earth-bark font-bold z-10" style={{ transform: "translateZ(5px)" }}>
                 <span>BIOCOMPATIBLE HYDROGEL</span>
                 <span>Z_02</span>
               </div>
 
-              {/* Transduction pulse dot floating upward */}
               {pulseSignal && (
                 <div 
-                  className="w-3 h-3 rounded-full bg-amber-400 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 blur-xs animate-bounce" 
+                  className="w-3 h-3 rounded-full bg-earth-sand absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 animate-bounce" 
                   style={{ transform: "translateZ(15px)" }}
                 />
               )}
 
-              <div className="flex justify-between items-end font-mono text-[7px] text-slate-500 z-10" style={{ transform: "translateZ(5px)" }}>
+              <div className="flex justify-between items-end font-mono text-[7px] text-earth-sand/40 z-10" style={{ transform: "translateZ(5px)" }}>
                 <span>GLIAL MITIGATION SHIELD</span>
                 <span>DIFFUSION_ACTIVE</span>
               </div>
@@ -678,111 +634,106 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
             <div 
               onMouseEnter={() => setHoveredLayer("cortex")}
               onMouseLeave={() => setHoveredLayer(null)}
-              className={`absolute inset-0 bg-emerald-950/15 border-2 rounded-xl transition-all duration-[800ms] cursor-help p-4 flex flex-col justify-between overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.1)] ${
+              className={`absolute inset-0 bg-earth-forest/5 border-2 rounded transition-all duration-[800ms] cursor-help p-4 flex flex-col justify-between overflow-hidden shadow ${
                 hoveredLayer === "cortex" 
-                  ? "border-emerald-400 bg-emerald-950/30 shadow-[0_0_30px_rgba(16,185,129,0.2)] scale-[0.99]" 
-                  : "border-emerald-500/20"
+                  ? "border-earth-moss bg-earth-forest/15 scale-[0.99]" 
+                  : "border-earth-moss/20"
               }`}
               style={{
                 transform: `translateZ(-${currentSeparation}px)`,
                 transformStyle: "preserve-3d"
               }}
             >
-              {/* Organic neuron cells schematic drawn with CSS circles/lines */}
-              <div className="absolute inset-0 opacity-30 p-4 flex items-center justify-center">
+              <div className="absolute inset-0 opacity-35 p-4 flex items-center justify-center">
                 <div className="relative w-full h-full">
-                  {/* Somatodendritic nodes */}
-                  <div className="absolute top-10 left-10 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <div className="absolute top-10 left-10 w-px h-16 bg-gradient-to-b from-emerald-400 to-transparent" />
+                  <div className="absolute top-10 left-10 w-2.5 h-2.5 rounded-full bg-earth-sage animate-pulse" />
+                  <div className="absolute top-10 left-10 w-px h-16 bg-gradient-to-b from-earth-sage to-transparent" />
                   
-                  <div className="absolute bottom-12 right-12 w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <div className="absolute bottom-12 right-12 w-px h-12 bg-gradient-to-t from-emerald-400 to-transparent" />
+                  <div className="absolute bottom-12 right-12 w-2.5 h-2.5 rounded-full bg-earth-sage animate-pulse" />
+                  <div className="absolute bottom-12 right-12 w-px h-12 bg-gradient-to-t from-earth-sage to-transparent" />
 
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-emerald-400/50 flex items-center justify-center">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-earth-moss/50 flex items-center justify-center">
+                    <div className="w-1.5 h-1.5 rounded-full bg-earth-sage" />
                   </div>
-                  {/* Axonal connections */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-px bg-dashed bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent rotate-12" />
                 </div>
               </div>
 
-              <div className="flex justify-between items-start font-mono text-[8px] text-emerald-400 font-bold z-10" style={{ transform: "translateZ(3px)" }}>
+              <div className="flex justify-between items-start font-mono text-[8px] text-earth-sage font-bold z-10" style={{ transform: "translateZ(3px)" }}>
                 <span>CORTICAL NEURONS [C]</span>
                 <span>Z_01</span>
               </div>
 
-              <div className="flex justify-between items-end font-mono text-[7px] text-slate-500 z-10" style={{ transform: "translateZ(3px)" }}>
+              <div className="flex justify-between items-end font-mono text-[7px] text-earth-sand/40 z-10" style={{ transform: "translateZ(3px)" }}>
                 <span>LAYER IV PYRAMIDAL CELLS</span>
                 <span>IONIC_POTENTIALS</span>
               </div>
             </div>
           </div>
 
-          <div className="absolute top-3 left-3 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-1 px-2 rounded border border-white/5">
+          <div className="absolute top-3 left-3 pointer-events-none font-mono text-[8px] text-earth-sand/30 bg-earth-dark/50 py-1 px-2 rounded border border-earth-clay/10">
             ISOMETRIC 3D ROTATION MODEL
           </div>
         </div>
 
         {/* Detailed context card for hovered layer */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="p-4 rounded-xl border border-white/5 bg-[#0B0F19]/50 min-h-[160px] flex flex-col justify-between">
+          <div className="p-4 rounded border border-earth-clay/10 bg-earth-dark/50 min-h-[160px] flex flex-col justify-between">
             <div className="space-y-2">
-              <span className="font-mono text-[9px] text-[#00F2FE] font-bold block uppercase tracking-wider">
+              <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase tracking-wider">
                 LAYER_METADATA_INSPECTOR
               </span>
               
-              {/* Dynamic Information based on hover */}
               {!hoveredLayer ? (
                 <div className="space-y-1">
-                  <h5 className="font-sans text-xs font-bold text-slate-300">Hover over a 3D Layer to analyze</h5>
-                  <p className="font-sans text-xs text-slate-500 leading-relaxed">
+                  <h5 className="font-sans text-xs font-bold text-earth-parchment">Hover over a 3D Layer to analyze</h5>
+                  <p className="font-sans text-xs text-earth-sand/50 leading-relaxed">
                     Hovering reveals the physical material blueprints of the bio-electronic transduction junction, mapping electrical flow from cellular networks up to silicon arrays.
                   </p>
                 </div>
               ) : hoveredLayer === "silicon" ? (
                 <div className="space-y-1">
-                  <h5 className="font-sans text-xs font-bold text-[#00F2FE] flex items-center">
+                  <h5 className="font-sans text-xs font-bold text-earth-sage flex items-center">
                     <Cpu size={12} className="mr-1.5" />
                     Layer 3: Silicon Micro-Electrode Array
                   </h5>
-                  <p className="font-sans text-xs text-slate-300 leading-relaxed">
+                  <p className="font-sans text-xs text-earth-sand/80 leading-relaxed">
                     Consists of dense microelectrode clusters. Captures continuous extracellular field potentials at a scale of 10-100μm, feeding amplified high-frequency voltages into hardware decoders to map motor and linguistic intent.
                   </p>
                 </div>
               ) : hoveredLayer === "hydrogel" ? (
                 <div className="space-y-1">
-                  <h5 className="font-sans text-xs font-bold text-amber-400 flex items-center">
+                  <h5 className="font-sans text-xs font-bold text-earth-bark flex items-center">
                     <Layers size={12} className="mr-1.5" />
                     Layer 2: Biocompatible Shield
                   </h5>
-                  <p className="font-sans text-xs text-slate-300 leading-relaxed">
+                  <p className="font-sans text-xs text-earth-sand/80 leading-relaxed">
                     A flexible, porous polymer mesh resembling natural extracellular matrix. Mitigates the foreign-body response and prevents glial scarring, ensuring micro-electrodes remain bio-integrated without tissue rejection.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <h5 className="font-sans text-xs font-bold text-emerald-400 flex items-center">
+                  <h5 className="font-sans text-xs font-bold text-earth-sage flex items-center">
                     <Activity size={12} className="mr-1.5" />
                     Layer 1: Biological Cortical Columns
                   </h5>
-                  <p className="font-sans text-xs text-slate-300 leading-relaxed">
+                  <p className="font-sans text-xs text-earth-sand/80 leading-relaxed">
                     The organic carbon layer containing Layer IV pyramidal cells. Fires action potentials via sodium-potassium channels, generating the baseline cognitive impulses that are mapped by the overlying electrode hardware.
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="border-t border-white/5 pt-3 font-mono text-[9px] text-slate-500 flex justify-between">
+            <div className="border-t border-earth-clay/10 pt-3 font-mono text-[9px] text-earth-sand/40 flex justify-between">
               <span>EXPLODED SCALE: {exploded ? "1.8x EXTENDED" : "1.0x COMPACT"}</span>
-              <span className="text-[#00F2FE]">SYNTHESIS: ACTIVE</span>
+              <span className="text-earth-sage font-bold">SYNTHESIS: ACTIVE</span>
             </div>
           </div>
 
           {/* Integration Slider */}
-          <div className="p-4 rounded-xl border border-white/5 bg-[#0B0F19]/30 space-y-3 font-mono text-[10px]">
+          <div className="p-4 rounded border border-earth-clay/10 bg-earth-dark/30 space-y-3 font-mono text-[10px]">
             <div className="flex justify-between items-center">
-              <span className="text-slate-400 font-bold uppercase tracking-wide">CARBON-TO-SILICON SYNTHESIS DEPTH</span>
-              <span className="text-[#00F2FE] font-bold">{synthesisRatio}% SYNTHESIS</span>
+              <span className="text-earth-sand/40 font-bold uppercase tracking-wide">CARBON-TO-SILICON SYNTHESIS DEPTH</span>
+              <span className="text-earth-sage font-bold">{synthesisRatio}% SYNTHESIS</span>
             </div>
 
             <input
@@ -791,10 +742,10 @@ export const SiliconSubstrateCSS3D: React.FC = () => {
               max="100"
               value={synthesisRatio}
               onChange={(e) => setSynthesisRatio(parseInt(e.target.value))}
-              className="w-full accent-[#00F2FE] h-1 bg-white/10 rounded-lg cursor-pointer"
+              className="w-full accent-earth-sage h-1 bg-earth-dark/40 rounded-lg cursor-pointer"
             />
 
-            <p className="font-sans text-[10px] leading-relaxed text-slate-500">
+            <p className="font-sans text-[10px] leading-relaxed text-earth-sand/40">
               *Synthesis Slider: Pulls the physical layers closer together in 3D space to simulate seamless bio-digital convergence, increasing long-term signal integration and reducing latency.
             </p>
           </div>

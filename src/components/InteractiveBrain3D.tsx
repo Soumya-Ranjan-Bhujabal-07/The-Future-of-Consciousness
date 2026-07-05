@@ -49,15 +49,15 @@ export const InteractiveBrain3D: React.FC = () => {
       const y = rY * Math.sin(theta) * Math.sin(phi) * 1.1; // elongated vertically
       const z = rZ * Math.cos(theta) * 0.9;
 
-      // Color mapping: some digital cyan, some biological coral/teal
+      // Color mapping: Earthy colors (sage green, moss green, warm wood brown, clay terracotta)
       const colorRandom = Math.random();
-      let baseColor = "rgba(0, 242, 254, 0.7)"; // Digital Cyan
+      let baseColor = "rgba(143, 168, 145, 0.7)"; // Sage Green
       if (colorRandom < 0.3) {
-        baseColor = "rgba(79, 172, 254, 0.7)"; // Teal/Bio Blue
-      } else if (colorRandom < 0.45) {
-        baseColor = "rgba(16, 185, 129, 0.7)"; // Emerald Green
-      } else if (colorRandom < 0.55) {
-        baseColor = "rgba(244, 63, 94, 0.6)"; // Deep Rose/Organic
+        baseColor = "rgba(140, 115, 85, 0.7)"; // Wood Brown
+      } else if (colorRandom < 0.6) {
+        baseColor = "rgba(58, 74, 60, 0.75)"; // Moss Green
+      } else if (colorRandom < 0.8) {
+        baseColor = "rgba(176, 117, 89, 0.65)"; // Terracotta Clay
       }
 
       nodes.push({
@@ -84,7 +84,7 @@ export const InteractiveBrain3D: React.FC = () => {
         z,
         px: 0,
         py: 0,
-        baseColor: "rgba(79, 172, 254, 0.5)",
+        baseColor: "rgba(140, 115, 85, 0.5)", // Muted wood brown
         size: Math.random() * 1.5 + 0.8,
       });
     }
@@ -123,7 +123,6 @@ export const InteractiveBrain3D: React.FC = () => {
 
     const handleScroll = () => {
       const depth = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      // Accelerate rotation on scroll depth
       setRotationSpeed(0.003 + depth * 0.015);
     };
 
@@ -144,16 +143,16 @@ export const InteractiveBrain3D: React.FC = () => {
       resizeObserver.observe(containerRef.current);
     }
 
-    // Dynamic node labels for hovering
+    // Organic Neurological Structure Labels
     const structures = [
-      "Thalamocortical Gateway Active",
-      "BCI Multi-Channel Electrode Readout",
-      "Connectome Synchronization: 99.8%",
-      "Predictive Error Metric Minimized",
-      "Global Neuronal Workspace Ignition",
-      "Neocortical Engram Storage Consolidation",
-      "Microtubule Quantum State Coherent",
-      "Silicon Substrate Emulation Layer Online"
+      "Thalamocortical Signal Pathway",
+      "Local Cortical Microcircuit",
+      "Synaptic Density Distribution",
+      "Intracellular Signal Propagation",
+      "Global Neuronal Workspace Node",
+      "Prefrontal Executive Assembly",
+      "Hippocampal Memory Trace Mapping",
+      "Electrophysiological Recording Node"
     ];
 
     let ticks = 0;
@@ -182,20 +181,16 @@ export const InteractiveBrain3D: React.FC = () => {
 
       // Project nodes
       nodes.forEach((node) => {
-        // Rotate Y axis
         let x1 = node.x * cosY - node.z * sinY;
         let z1 = node.z * cosY + node.x * sinY;
 
-        // Rotate X axis
         let y2 = node.y * cosX - z1 * sinX;
         let z2 = z1 * cosX + node.y * sinX;
 
-        // Perspective projection
         const depthScale = fov / (fov + z2);
         node.px = centerX + x1 * scaleFactor * depthScale;
         node.py = centerY + y2 * scaleFactor * depthScale;
 
-        // Determine if mouse is near this node to apply physical push force and select for telemetry
         let displaceX = 0;
         let displaceY = 0;
         let isHovered = false;
@@ -212,7 +207,6 @@ export const InteractiveBrain3D: React.FC = () => {
 
           if (dist < 45) {
             isHovered = true;
-            // Push away from mouse slightly
             const force = (45 - dist) / 45 * 10;
             displaceX = (dx / (dist || 1)) * force;
             displaceY = (dy / (dist || 1)) * force;
@@ -222,34 +216,26 @@ export const InteractiveBrain3D: React.FC = () => {
         const renderX = node.px + displaceX;
         const renderY = node.py + displaceY;
 
-        // Draw node
         ctx.beginPath();
         const alpha = Math.max(0.12, depthScale * 0.7);
         ctx.arc(renderX, renderY, node.size * depthScale * (isHovered ? 1.6 : 1.0), 0, Math.PI * 2);
 
-        // Compute color dynamically based on hover or scroll transitions
-        const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight || 1);
         let colorStr = node.baseColor;
         
         if (isHovered) {
-          colorStr = "rgba(245, 158, 11, 0.95)"; // Amber gold highlight on hover
-        } else if (scrollPercent > 0.45) {
-          // Transition purple and blue nodes to amber or cyans
-          if (node.baseColor.includes("244, 63, 94")) {
-            colorStr = "rgba(0, 242, 254, 0.75)"; // frequency transition to high-tech cyan
-          }
+          colorStr = "rgba(217, 164, 115, 0.95)"; // Warm terracotta highlight on hover
         }
 
         ctx.fillStyle = colorStr.replace("0.7", alpha.toString()).replace("0.6", alpha.toString()).replace("0.5", alpha.toString());
-        ctx.shadowBlur = isHovered ? 12 : (depthScale > 1.1 ? 6 : 0);
-        ctx.shadowColor = isHovered ? "#F59E0B" : "#00F2FE";
+        ctx.shadowBlur = isHovered ? 8 : 0;
+        ctx.shadowColor = isHovered ? "#d9a473" : "transparent";
         ctx.fill();
         ctx.shadowBlur = 0; // reset
       });
 
-      // Draw synapses (glowing connections) between nearby nodes
-      ctx.lineWidth = 0.55;
-      const maxDistanceSq = (width * 0.08) * (width * 0.08); // dynamic distance limit
+      // Draw synapses between nearby nodes
+      ctx.lineWidth = 0.5;
+      const maxDistanceSq = (width * 0.08) * (width * 0.08);
 
       for (let i = 0; i < nodes.length; i += 2) {
         const nodeA = nodes[i];
@@ -260,22 +246,20 @@ export const InteractiveBrain3D: React.FC = () => {
           const distSq = dx * dx + dy * dy;
 
           if (distSq < maxDistanceSq) {
-            const alpha = (1 - distSq / maxDistanceSq) * 0.22;
+            const alpha = (1 - distSq / maxDistanceSq) * 0.15;
             ctx.beginPath();
             ctx.moveTo(nodeA.px, nodeA.py);
             ctx.lineTo(nodeB.px, nodeB.py);
-            ctx.strokeStyle = `rgba(0, 242, 254, ${alpha})`;
+            ctx.strokeStyle = `rgba(143, 168, 145, ${alpha})`; // Sage green synaptic line
             ctx.stroke();
           }
         }
       }
 
-      // Update telemetry readout deterministically if hovered close enough
       if (closestNode && closestDist < 35) {
         const nodeIndex = Math.abs(Math.floor((closestNode as Node3D).x * 1234 + (closestNode as Node3D).y * 5678)) % structures.length;
         setHoverNodeInfo(structures[nodeIndex]);
       } else if (ticks % 120 === 0 && Math.random() > 0.6) {
-        // Fallback random ambient readout
         setHoverNodeInfo(structures[Math.floor(Math.random() * structures.length)]);
       }
 
@@ -296,28 +280,11 @@ export const InteractiveBrain3D: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[320px] md:h-[400px] flex items-center justify-center border border-white/10 rounded-xl bg-white/5 backdrop-blur-xl overflow-hidden group select-none cursor-pointer shadow-lg shadow-black/30"
+      className="relative w-full h-[320px] md:h-[400px] flex items-center justify-center border border-earth-clay/10 rounded-xl bg-earth-walnut/20 backdrop-blur-xl overflow-hidden group select-none cursor-pointer shadow-md shadow-black/5"
     >
-      {/* Visual cybernetic corner crosshairs */}
-      <div className="absolute top-3 left-3 w-4 h-4 border-t-2 border-l-2 border-[#00F2FE]/30" />
-      <div className="absolute top-3 right-3 w-4 h-4 border-t-2 border-r-2 border-[#00F2FE]/30" />
-      <div className="absolute bottom-3 left-3 w-4 h-4 border-b-2 border-l-2 border-[#00F2FE]/30" />
-      <div className="absolute bottom-3 right-3 w-4 h-4 border-b-2 border-r-2 border-[#00F2FE]/30" />
-
-      {/* Cybernetic Readout Indicators */}
-      <div className="absolute top-4 left-5 flex flex-col font-mono text-[9px] text-[#00F2FE]/50 space-y-0.5 pointer-events-none">
-        <div>SYS_MODE: BIDIRECTIONAL_SYNTHESIS</div>
-        <div>SCAN_CORE: QUANTUM_THALAMIC_GATE</div>
-        <div>COGNITIVE_ARRAY_FEED: OPEN</div>
-      </div>
-
-      <div className="absolute bottom-4 left-5 font-mono text-[10px] text-[#4FACFE]/80 pointer-events-none transition-all duration-300">
-        <span className="inline-block w-2 h-2 rounded-full bg-[#00F2FE] shadow-[0_0_8px_#00F2FE] mr-2" />
-        {hoverNodeInfo || "Intrathalamic Signal Flow Synchronized"}
-      </div>
-
-      <div className="absolute bottom-4 right-5 font-mono text-[9px] text-slate-500/70 pointer-events-none">
-        ROT_VEL: {(rotationSpeed * 1000).toFixed(2)} Hz
+      <div className="absolute bottom-4 left-5 font-mono text-[11px] text-earth-sand/80 pointer-events-none transition-all duration-300">
+        <span className="inline-block w-1.5 h-1.5 rounded-full bg-earth-sage mr-2" />
+        {hoverNodeInfo || "Active Synaptic Network Map"}
       </div>
 
       <canvas ref={canvasRef} className="block w-full h-full" />

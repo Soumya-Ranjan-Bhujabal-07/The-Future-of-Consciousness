@@ -389,41 +389,41 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
   // A. Mary's Room
   if (label.includes("Mary’s Room") || label.includes("Mary's Room")) {
     return (
-      <div className="my-6 p-5 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl">
-        <div className="flex items-center space-x-2.5 mb-4 pb-3 border-b border-white/10">
-          <Sparkles className="text-pink-400" size={16} />
-          <span className="font-mono text-xs font-bold text-slate-300 tracking-wider">
-            THOUGHT_EXPERIMENT: MARY'S_ROOM
+      <div className="my-6 p-5 rounded-xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-xl">
+        <div className="flex items-center space-x-2.5 mb-4 pb-3 border-b border-earth-clay/10">
+          <Sparkles className="text-earth-sage" size={15} />
+          <span className="font-mono text-xs font-bold text-earth-sand/80 tracking-wider">
+            Thought Experiment: Mary's Room
           </span>
         </div>
-        <p className="font-sans text-xs text-slate-300 mb-4 leading-relaxed">
+        <p className="font-sans text-xs text-earth-sand/90 mb-4 leading-relaxed">
           Mary is a brilliant scientist who investigates the world from a monochromatic, black-and-white room. She knows every physical fact about color vision, but has never experienced color first-hand. What happens when she leaves?
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-lg bg-black/60 border border-white/5 flex flex-col justify-between h-36">
-            <span className="font-mono text-[9px] text-slate-500">INSIDE MARY'S ROOM (PHYSICALIST REPERTOIRE)</span>
+          <div className="p-4 rounded-lg bg-earth-dark/40 border border-earth-clay/10 flex flex-col justify-between h-36">
+            <span className="font-mono text-[9px] text-earth-sand/40">INSIDE MARY'S ROOM (PHYSICALIST REPERTOIRE)</span>
             <div className="flex flex-col items-center justify-center grow space-y-1">
-              <span className="text-[10px] font-mono text-slate-400">Total physical dataset available</span>
-              <span className="text-xs font-mono font-bold text-slate-500">λ = 650nm (Red) is processed in V4 area</span>
+              <span className="text-[10px] font-mono text-earth-sand/50">Total physical dataset available</span>
+              <span className="text-xs font-mono font-bold text-earth-sand/70">λ = 650nm (Red) is processed in V4 area</span>
             </div>
           </div>
-          <div className="p-4 rounded-lg bg-gradient-to-br from-indigo-950/40 via-slate-950/60 to-rose-950/20 border border-white/10 flex flex-col justify-between h-36">
-            <span className="font-mono text-[9px] text-[#00F2FE]">OUTSIDE ROOM (PHENOMENAL ACQUISITION)</span>
+          <div className="p-4 rounded-lg bg-earth-forest/15 border border-earth-moss/20 flex flex-col justify-between h-36">
+            <span className="font-mono text-[9px] text-earth-sage">OUTSIDE ROOM (PHENOMENAL ACQUISITION)</span>
             <div className="flex flex-col items-center justify-center grow space-y-1">
-              <span className="text-[10px] font-sans text-slate-300">Does Mary gain new knowledge?</span>
+              <span className="text-[10px] font-sans text-earth-sand/70">Does Mary gain new knowledge?</span>
               <button 
                 onClick={() => setInteractiveState(!interactiveState)}
                 className={`text-[10px] px-3 py-1 rounded font-mono border font-bold transition-all duration-300 ${
                   interactiveState 
-                    ? "bg-rose-500 border-rose-400 text-white shadow-md shadow-rose-500/20" 
-                    : "bg-white/5 border-white/10 text-rose-400 hover:border-rose-500"
+                    ? "bg-earth-sage border-earth-sage text-earth-dark shadow" 
+                    : "bg-earth-dark/40 border-earth-clay/20 text-earth-sage hover:border-earth-sage/60"
                 }`}
               >
                 {interactiveState ? "MARY SENSES RED QUALIA" : "TRIGGER EXTRACTION"}
               </button>
             </div>
             {interactiveState && (
-              <span className="text-[10px] text-center font-mono text-rose-400 animate-pulse">
+              <span className="text-[10px] text-center font-mono text-earth-sage animate-pulse">
                 "It feels like something to see red!"
               </span>
             )}
@@ -443,23 +443,23 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
       { name: "Locked-In Syndrome", arousal: 95, awareness: 95, color: "bg-cyan-500", desc: "Fully aware, completely paralyzed except for eyes." }
     ];
     return (
-      <div className="my-6 p-5 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl">
-        <div className="flex items-center space-x-2.5 mb-4 pb-3 border-b border-white/10">
-          <LineChart className="text-[#00F2FE]" size={16} />
-          <span className="font-mono text-xs font-bold text-slate-300 tracking-wider">
-            CLINICAL_SPECTRUM_AROUSAL_AWARENESS_GRID
+      <div className="my-6 p-5 rounded-xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-xl">
+        <div className="flex items-center space-x-2.5 mb-4 pb-3 border-b border-earth-clay/10">
+          <LineChart className="text-earth-sage" size={15} />
+          <span className="font-mono text-xs font-bold text-earth-sand/80 tracking-wider">
+            Clinical Spectrum: Arousal & Awareness Grid
           </span>
         </div>
-        <p className="font-sans text-xs text-slate-300 mb-4 leading-relaxed">
+        <p className="font-sans text-xs text-earth-sand/90 mb-4 leading-relaxed">
           The two separate dimensions of consciousness: **Arousal** (brain stem activation / wakefulness) and **Awareness** (thalamocortical coordination / cognitive content).
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="md:col-span-2 relative h-48 border border-white/10 rounded-lg bg-black/40 overflow-hidden p-4">
+          <div className="md:col-span-2 relative h-48 border border-earth-clay/15 rounded-lg bg-earth-dark/60 overflow-hidden p-4">
             {/* Axis Labels */}
-            <div className="absolute left-1.5 top-1/2 -translate-y-1/2 -rotate-90 origin-left font-mono text-[8px] text-slate-500">
+            <div className="absolute left-1.5 top-1/2 -translate-y-1/2 -rotate-90 origin-left font-mono text-[8px] text-earth-sand/30">
               Y-AXIS: AWARENESS (CONTENT)
             </div>
-            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 font-mono text-[8px] text-slate-500">
+            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 font-mono text-[8px] text-earth-sand/30">
               X-AXIS: AROUSAL (WAKEFULNESS)
             </div>
             
@@ -469,21 +469,21 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
                 key={i}
                 onClick={() => setSliderVal(i)}
                 style={{ left: `${st.arousal}%`, bottom: `${st.awareness}%` }}
-                className="absolute w-3.5 h-3.5 -ml-1.5 -mb-1.5 rounded-full border border-white/40 shadow-lg shadow-black/50 transition-all duration-300 hover:scale-125 focus:outline-none cursor-pointer group"
+                className="absolute w-3 h-3 -ml-1.5 -mb-1.5 rounded-full border border-earth-sand/40 shadow transition-all duration-300 hover:scale-125 focus:outline-none cursor-pointer group"
               >
                 <span className={`absolute inset-0 rounded-full ${st.color} ${sliderVal === i ? "animate-ping opacity-60" : ""}`} />
                 <span className={`absolute inset-0 rounded-full ${st.color}`} />
               </button>
             ))}
-            <div className="absolute top-2 right-2 text-[9px] font-mono text-slate-500">Click coordinates to parse state</div>
+            <div className="absolute top-2 right-2 text-[9px] font-mono text-earth-sand/30">Click coordinates to parse state</div>
           </div>
-          <div className="p-4 rounded-lg bg-[#0B0F19]/60 border border-white/10 flex flex-col justify-between">
+          <div className="p-4 rounded-lg bg-earth-dark/50 border border-earth-clay/15 flex flex-col justify-between">
             <div className="space-y-1.5">
-              <span className="font-mono text-[9px] text-[#00F2FE] tracking-wider font-semibold block uppercase">CURRENT SELECTION</span>
-              <h4 className="font-sans text-sm font-bold text-slate-200">{states[sliderVal]?.name}</h4>
-              <p className="font-sans text-xs leading-relaxed text-slate-300">{states[sliderVal]?.desc}</p>
+              <span className="font-mono text-[9px] text-earth-sage tracking-wider font-semibold block uppercase">CURRENT SELECTION</span>
+              <h4 className="font-sans text-sm font-bold text-earth-parchment">{states[sliderVal]?.name}</h4>
+              <p className="font-sans text-xs leading-relaxed text-earth-sand/80">{states[sliderVal]?.desc}</p>
             </div>
-            <div className="pt-3 border-t border-white/10 font-mono text-[9px] text-slate-500 flex justify-between">
+            <div className="pt-3 border-t border-earth-clay/10 font-mono text-[9px] text-earth-sand/40 flex justify-between">
               <span>AROUSAL: {states[sliderVal]?.arousal}%</span>
               <span>AWARENESS: {states[sliderVal]?.awareness}%</span>
             </div>
@@ -496,34 +496,34 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
   // C. HADD Error Matrix
   if (label.includes("HADD")) {
     return (
-      <div className="my-6 p-5 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl">
-        <div className="flex items-center space-x-2.5 mb-4 pb-3 border-b border-white/10">
-          <ShieldAlert className="text-amber-400" size={16} />
-          <span className="font-mono text-xs font-bold text-slate-300 tracking-wider">
-            EVOLUTIONARY_HADD_ASYMMETRIC_ERROR_MATRIX
+      <div className="my-6 p-5 rounded-xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-xl">
+        <div className="flex items-center space-x-2.5 mb-4 pb-3 border-b border-earth-clay/10">
+          <ShieldAlert className="text-earth-bark" size={15} />
+          <span className="font-mono text-xs font-bold text-earth-sand/80 tracking-wider">
+            Evolutionary HADD Asymmetric Error Matrix
           </span>
         </div>
-        <p className="font-sans text-xs text-slate-300 mb-4 leading-relaxed">
+        <p className="font-sans text-xs text-earth-sand/90 mb-4 leading-relaxed">
           The Hyperactive Agency Detection Device is an evolved survival heuristic. Why does our mind assume agency (creaking floorboards = ghosts) under chaotic inputs?
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-4 rounded-lg border border-white/5 bg-black/30 flex flex-col justify-between">
+          <div className="p-4 rounded-lg border border-earth-clay/10 bg-earth-dark/40 flex flex-col justify-between">
             <div>
-              <span className="font-mono text-[9px] text-emerald-400 font-bold block mb-1">TYPE I ERROR (FALSE POSITIVE)</span>
-              <span className="font-sans text-xs font-bold text-slate-300">Rustling leaves = Predator</span>
-              <p className="font-sans text-[11px] text-slate-400 mt-1">Cost: Transient fear, extra vigilance. Survivability is intact. Evolved bias select this trajectory.</p>
+              <span className="font-mono text-[9px] text-earth-sage font-bold block mb-1">TYPE I ERROR (FALSE POSITIVE)</span>
+              <span className="font-sans text-xs font-bold text-earth-sand/90">Rustling leaves = Predator</span>
+              <p className="font-sans text-[11px] text-earth-sand/60 mt-1">Cost: Transient fear, extra vigilance. Survivability is intact. Evolved bias select this trajectory.</p>
             </div>
-            <div className="mt-3 text-[10px] font-mono text-emerald-400/80 bg-emerald-950/20 px-2 py-1 rounded border border-emerald-500/10 text-center">
+            <div className="mt-3 text-[10px] font-mono text-earth-sage bg-earth-forest/20 px-2 py-1 rounded border border-earth-moss/20 text-center">
               LOW COST / BENEFICIAL PRESERVATION
             </div>
           </div>
-          <div className="p-4 rounded-lg border border-white/5 bg-black/30 flex flex-col justify-between">
+          <div className="p-4 rounded-lg border border-earth-clay/10 bg-earth-dark/40 flex flex-col justify-between">
             <div>
-              <span className="font-mono text-[9px] text-rose-400 font-bold block mb-1">TYPE II ERROR (FALSE NEGATIVE)</span>
-              <span className="font-sans text-xs font-bold text-slate-300">Predator = Rustling leaves</span>
-              <p className="font-sans text-[11px] text-slate-400 mt-1">Cost: Death. Genetic selection of agency detection failure ends instantly.</p>
+              <span className="font-mono text-[9px] text-earth-bark font-bold block mb-1">TYPE II ERROR (FALSE NEGATIVE)</span>
+              <span className="font-sans text-xs font-bold text-earth-sand/90">Predator = Rustling leaves</span>
+              <p className="font-sans text-[11px] text-earth-sand/60 mt-1">Cost: Death. Genetic selection of agency detection failure ends instantly.</p>
             </div>
-            <div className="mt-3 text-[10px] font-mono text-rose-400/80 bg-rose-950/20 px-2 py-1 rounded border border-rose-500/10 text-center">
+            <div className="mt-3 text-[10px] font-mono text-earth-bark bg-earth-clay/20 px-2 py-1 rounded border border-earth-clay/35 text-center">
               FATAL COST / CRITICAL COGNITIVE PRESSURES
             </div>
           </div>
@@ -533,47 +533,47 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
   }
 
   // Dynamic grouping based on keyword categories to handle all 70+ indicators beautifully and safely
-  let icon = <Brain size={15} className="text-[#00F2FE]" />;
+  let icon = <Brain size={15} className="text-earth-sage" />;
   let categoryLabel = "NEUROLOGICAL_ARCHITECTURAL_CALLOUT";
-  let borderStyle = "border-white/10 bg-white/5";
+  let borderStyle = "border-earth-clay/15 bg-earth-walnut/15";
 
   if (label.includes("Privacy") || label.includes("Rights") || label.includes("Pillars") || label.includes("Ethical") || label.includes("Dignity")) {
-    icon = <Scale size={15} className="text-emerald-400" />;
+    icon = <Scale size={15} className="text-earth-sage" />;
     categoryLabel = "NEUROETHICS_&_LEGISLATIVE_PILLARS";
-    borderStyle = "border-emerald-500/20 bg-emerald-500/5";
+    borderStyle = "border-earth-moss/25 bg-earth-forest/5";
   } else if (label.includes("Upload") || label.includes("Silicon") || label.includes("Digital") || label.includes("Future") || label.includes("Bostrom") || label.includes("Sim")) {
-    icon = <Cpu size={15} className="text-[#00F2FE]" />;
+    icon = <Cpu size={15} className="text-earth-bark" />;
     categoryLabel = "COMPUTATIONAL_FUNCTIONALIST_MATRIX";
-    borderStyle = "border-[#00F2FE]/20 bg-[#00F2FE]/5";
+    borderStyle = "border-earth-clay/20 bg-earth-clay/5";
   } else if (label.includes("Eschatological") || label.includes("Spiritual") || label.includes("Soul") || label.includes("Death") || label.includes("NDE") || label.includes("Cognitive")) {
-    icon = <Layers size={15} className="text-purple-400" />;
+    icon = <Layers size={15} className="text-earth-sand" />;
     categoryLabel = "COGNITIVE_EVOLUTIONARY_BYPRODUCT_INDEX";
-    borderStyle = "border-purple-500/20 bg-purple-500/5";
+    borderStyle = "border-earth-clay/25 bg-earth-walnut/10";
   } else if (label.includes("Signal") || label.includes("P300") || label.includes("ECoG") || label.includes("Imaging") || label.includes("Micro-Architectural") || label.includes("Workspace") || label.includes("Rivalry")) {
-    icon = <Network size={15} className="text-teal-400" />;
+    icon = <Network size={15} className="text-earth-sage" />;
     categoryLabel = "ELECTROPHYSIOLOGY_SIGNAL_INTEGRATION";
-    borderStyle = "border-teal-500/20 bg-teal-500/5";
+    borderStyle = "border-earth-moss/20 bg-earth-forest/5";
   }
 
   return (
-    <div className={`my-6 p-5 rounded-xl border backdrop-blur-xl shadow-md shadow-black/20 ${borderStyle}`}>
-      <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-white/10 font-mono text-[10px]">
+    <div className={`my-6 p-5 rounded-xl border backdrop-blur-xl ${borderStyle}`}>
+      <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-earth-clay/10 font-mono text-[10px]">
         <div className="flex items-center space-x-2">
           {icon}
-          <span className="text-slate-200 font-bold tracking-wider">{categoryLabel}</span>
+          <span className="text-earth-parchment font-bold tracking-wider">{categoryLabel}</span>
         </div>
-        <span className="text-slate-500 text-[9px]">DYN_TELEMETRY</span>
+        <span className="text-earth-sand/30 text-[9px]">DYN_TELEMETRY</span>
       </div>
 
       <div className="flex flex-col space-y-3">
-        <h4 className="font-sans text-xs font-bold text-[#00F2FE] leading-snug">
+        <h4 className="font-sans text-xs font-bold text-earth-sage leading-snug">
           {label}
         </h4>
 
-        <div className="p-3 rounded-lg bg-black/40 border border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-3 rounded-lg bg-earth-dark/40 border border-earth-clay/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1 grow">
-            <span className="font-mono text-[9px] text-slate-500 uppercase tracking-widest block">Core Structural Thesis</span>
-            <p className="font-sans text-[11px] leading-relaxed text-slate-400">
+            <span className="font-mono text-[9px] text-earth-sand/40 uppercase tracking-widest block">Core Structural Thesis</span>
+            <p className="font-sans text-[11px] leading-relaxed text-earth-sand/70">
               {label.includes("Workspace") 
                 ? "This model argues that conscious subjective experience is achieved when sensory inputs are globally broadcast via high-bandwidth long-range thalamocortical networks to specialized local parallel processors, establishing functional access consciousness."
                 : label.includes("P300")
@@ -592,8 +592,8 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
               onClick={() => setInteractiveState(!interactiveState)}
               className={`px-3 py-1.5 rounded text-[10px] font-mono border font-bold transition-all duration-300 ${
                 interactiveState
-                  ? "bg-[#00F2FE] border-[#00F2FE] text-slate-950 shadow-md shadow-[#00F2FE]/15"
-                  : "bg-white/5 border-white/10 text-[#00F2FE] hover:border-[#00F2FE]/40"
+                  ? "bg-earth-sage border-earth-sage text-earth-dark shadow"
+                  : "bg-earth-dark/40 border-earth-clay/20 text-earth-sage hover:border-earth-sage/40"
               }`}
             >
               {interactiveState ? "CORE_LOGS_ACTIVE" : "EXPAND_CORE_LOGS"}
@@ -602,8 +602,8 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
         </div>
 
         {interactiveState && (
-          <div className="p-3.5 rounded-lg border border-white/10 bg-[#0B0F19]/40 font-mono text-[10px] text-slate-400 space-y-1.5 leading-relaxed">
-            <div className="text-teal-400 font-bold uppercase tracking-wider text-[9px] mb-1">
+          <div className="p-3.5 rounded-lg border border-earth-clay/10 bg-earth-dark/50 font-mono text-[10px] text-earth-sand/60 space-y-1.5 leading-relaxed">
+            <div className="text-earth-sage font-bold uppercase tracking-wider text-[9px] mb-1">
               CONNECTED NEURO-CHRONOLOGY RECORDS
             </div>
             <div>[00:01] Parsing informational parameters for target schematic...</div>
@@ -618,19 +618,29 @@ const DynamicVisualCard: React.FC<DynamicVisualCardProps> = ({ label }) => {
 
 interface ChapterContentProps {
   chapter: Chapter;
+  activeChapterId: string;
   activeSectionId: string;
 }
 
-export const ChapterContent: React.FC<ChapterContentProps> = ({ chapter, activeSectionId }) => {
+export const ChapterContent: React.FC<ChapterContentProps> = ({
+  chapter,
+  activeChapterId,
+  activeSectionId,
+}) => {
+  const isChapterActive = activeChapterId === chapter.id;
   return (
-    <article className="space-y-12">
-      <header className="border-b border-white/10 pb-6 mb-8">
-        <div className="flex items-center space-x-2 font-mono text-[10px] text-[#00F2FE] uppercase tracking-widest mb-1.5">
+    <article
+      className={`space-y-12 transition-opacity duration-700 ease-in-out ${
+        isChapterActive ? "opacity-100" : "opacity-60"
+      }`}
+    >
+      <header className="border-b border-earth-clay/10 pb-6 mb-8">
+        <div className="flex items-center space-x-2 font-mono text-[10px] text-earth-sage uppercase tracking-widest mb-1.5">
           <span>CHAPTER_0{chapter.number}</span>
-          <span className="text-slate-600">•</span>
+          <span className="text-earth-sand/30">•</span>
           <span>RESEARCH_MANUSCRIPT_CORE</span>
         </div>
-        <h2 className="font-sans text-2xl md:text-3xl font-extrabold tracking-tight text-white uppercase">
+        <h2 className="font-sans text-2xl md:text-3xl font-extrabold tracking-tight text-earth-parchment uppercase">
           {chapter.title}
         </h2>
       </header>
@@ -642,14 +652,14 @@ export const ChapterContent: React.FC<ChapterContentProps> = ({ chapter, activeS
             <section
               key={section.id}
               id={section.id}
-              className={`scroll-mt-24 transition-all duration-500 p-4 rounded-xl ${
+              className={`scroll-mt-24 transition-all duration-500 p-4 rounded ${
                 isActive 
-                  ? "bg-white/5 border border-white/10 shadow-[0_0_15px_rgba(0,242,254,0.05)]" 
+                  ? "bg-earth-forest/10 border border-earth-moss/25 shadow-sm" 
                   : "border border-transparent"
               }`}
             >
-              <h3 className="font-sans text-base md:text-lg font-bold text-slate-100 tracking-wide mb-4 flex items-center space-x-2">
-                <span className="w-1.5 h-3.5 rounded bg-[#00F2FE] shrink-0 shadow-[0_0_8px_#00F2FE]" />
+              <h3 className="font-sans text-base md:text-lg font-bold text-earth-parchment tracking-wide mb-4 flex items-center space-x-2">
+                <span className="w-1.5 h-3.5 rounded bg-earth-sage shrink-0" />
                 <span>{section.title}</span>
               </h3>
 
@@ -696,7 +706,7 @@ export const ChapterContent: React.FC<ChapterContentProps> = ({ chapter, activeS
                       component = (
                         <p
                            key={`para-${pIdx}`}
-                           className="font-sans text-xs md:text-sm text-[#E2E8F0] leading-relaxed tracking-wide select-text first-letter:text-white first-letter:font-semibold"
+                           className="font-sans text-xs md:text-sm text-earth-sand/90 leading-relaxed tracking-wide select-text first-letter:text-earth-parchment first-letter:font-semibold"
                         >
                           {paragraph}
                         </p>

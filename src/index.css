@@ -4,6 +4,16 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-earth-dark: #12100e;
+  --color-earth-walnut: #1a1613;
+  --color-earth-clay: #2d2420;
+  --color-earth-forest: #222b23;
+  --color-earth-moss: #3a4a3c;
+  --color-earth-sage: #8fa891;
+  --color-earth-sand: #d8cdbe;
+  --color-earth-parchment: #f2ebd9;
+  --color-earth-bark: #8c7355;
 }
 
 /* Customized scrollbars for premium long-form reader aesthetics */
@@ -15,11 +25,11 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #2d2420;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #3a4a3c;
 }
 
 @keyframes spin-slow {

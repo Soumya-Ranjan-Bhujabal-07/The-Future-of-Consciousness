@@ -37,7 +37,7 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       // Rotate camera
@@ -53,7 +53,7 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
       if (modelMode === "dualism") {
         // Draw Dualism Model: Physical Realm (bottom grid) + Spiritual Realm (top cloud) + Intersecting Pineal Beam
         // 1. Draw physical realm (neurons/mesh on bottom plane)
-        ctx.strokeStyle = "rgba(16, 185, 129, 0.15)";
+        ctx.strokeStyle = "rgba(146, 168, 142, 0.15)";
         ctx.lineWidth = 1;
         const gridZ = h - 60;
         ctx.beginPath();
@@ -70,18 +70,18 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
         // 2. Draw Spiritual Realm (Glowing mental cloud at top)
         const cloudY = 50;
         const grad = ctx.createRadialGradient(cx, cloudY, 10, cx, cloudY, 60);
-        grad.addColorStop(0, "rgba(139, 92, 246, 0.4)");
-        grad.addColorStop(1, "rgba(139, 92, 246, 0)");
+        grad.addColorStop(0, "rgba(140, 125, 112, 0.4)");
+        grad.addColorStop(1, "rgba(140, 125, 112, 0)");
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(cx, cloudY, 60, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.font = "bold 9px monospace";
-        ctx.fillStyle = "#A78BFA";
+        ctx.fillStyle = "#cfbda8";
         ctx.fillText("RES COGITANS (IMMATERIAL MIND)", cx - 80, cloudY - 10);
 
-        ctx.fillStyle = "#10B981";
+        ctx.fillStyle = "#92a88e";
         ctx.fillText("RES EXTENSA (PHYSICAL BRAIN)", cx - 75, gridZ + 40);
 
         // 3. Central Pineal Gland intersection (Descartes' bridge)
@@ -134,7 +134,7 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
         }
 
         // Draw connecting fibers
-        ctx.strokeStyle = `rgba(0, 242, 254, ${0.1 + (coupling / 100) * 0.4})`;
+        ctx.strokeStyle = `rgba(146, 168, 142, ${0.1 + (coupling / 100) * 0.4})`;
         ctx.lineWidth = 0.8;
         for (let i = 0; i < nodeCount; i++) {
           const n1 = nodes[i];
@@ -157,8 +157,8 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
         // Draw emergent consciousness field inside the core
         const coreIntensity = (coupling / 100);
         const grad = ctx.createRadialGradient(cx, cy, 5, cx, cy, 70);
-        grad.addColorStop(0, `rgba(0, 242, 254, ${coreIntensity * 0.4})`);
-        grad.addColorStop(1, "rgba(0, 242, 254, 0)");
+        grad.addColorStop(0, `rgba(146, 168, 142, ${coreIntensity * 0.4})`);
+        grad.addColorStop(1, "rgba(146, 168, 142, 0)");
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(cx, cy, 70, 0, Math.PI * 2);
@@ -172,15 +172,15 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
 
           ctx.beginPath();
           ctx.arc(rx, ry, nodeSize, 0, Math.PI * 2);
-          ctx.fillStyle = idx % 2 === 0 ? "#00F2FE" : "#3B82F6";
-          ctx.shadowColor = "#00F2FE";
+          ctx.fillStyle = idx % 2 === 0 ? "#92a88e" : "#cfbda8";
+          ctx.shadowColor = "#92a88e";
           ctx.shadowBlur = idx % 3 === 0 ? 8 : 0;
           ctx.fill();
           ctx.shadowBlur = 0;
         });
 
         ctx.font = "bold 9px monospace";
-        ctx.fillStyle = "#00F2FE";
+        ctx.fillStyle = "#92a88e";
         ctx.fillText("EMERGENT CONSCIOUSNESS STATE", cx - 85, cy - 65);
       }
 
@@ -193,43 +193,43 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
   }, [modelMode, coupling, isRotating]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
-          <Brain size={16} className="text-purple-400" />
+          <Brain size={16} className="text-earth-sage" />
           <div>
-            <span className="font-mono text-[9px] text-purple-400 font-bold block uppercase">CHAPTER 1: PHILOSOPHICAL FOUNDATIONS</span>
+            <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase">CHAPTER 1: PHILOSOPHICAL FOUNDATIONS</span>
             <h4 className="font-sans text-xs font-bold text-white">Dualism Cartesian Bridge vs. Physicalist Emergence 3D</h4>
           </div>
         </div>
-        <div className="flex bg-black/40 rounded-lg p-0.5 border border-white/5 font-mono text-[9px]">
+        <div className="flex bg-black/40 rounded-lg p-0.5 border border-earth-clay/10 font-mono text-[9px]">
           <button
             onClick={() => setModelMode("dualism")}
-            className={`py-1 px-2 rounded font-bold transition-all ${modelMode === "dualism" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "text-slate-400"}`}
+            className={`py-1 px-2 rounded font-bold transition-all ${modelMode === "dualism" ? "bg-earth-clay/10 text-earth-bark border border-earth-clay/20" : "text-earth-sand/70"}`}
           >
             CARTESIAN DUALISM
           </button>
           <button
             onClick={() => setModelMode("emergence")}
-            className={`py-1 px-2 rounded font-bold transition-all ${modelMode === "emergence" ? "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20" : "text-slate-400"}`}
+            className={`py-1 px-2 rounded font-bold transition-all ${modelMode === "emergence" ? "bg-earth-forest/20 text-earth-sage border border-earth-moss/30" : "text-earth-sand/70"}`}
           >
             PHYSICALIST EMERGENCE
           </button>
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           INTERACTIVE 3D SUBSTRATE MATRIX
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>SUBSTRATE COMPLEXITY COUPLING</span>
-            <span className="text-purple-400 font-bold">{coupling}%</span>
+            <span className="text-earth-sage font-bold">{coupling}%</span>
           </div>
           <input
             type="range"
@@ -242,7 +242,7 @@ export const DualismConsciousnessBridge3D: React.FC = () => {
         </div>
         <button
           onClick={() => setIsRotating(!isRotating)}
-          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
+          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-earth-parchment font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
         >
           <RefreshCw size={10} className={isRotating ? "animate-spin-slow" : ""} />
           <span>{isRotating ? "FREEZE 3D PERSPECTIVE" : "ENGAGE ROTATION"}</span>
@@ -288,7 +288,7 @@ export const RhythmicCorticalSynchronizer3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       if (isRotating) rotationRef.current += 0.003;
@@ -300,9 +300,9 @@ export const RhythmicCorticalSynchronizer3D: React.FC = () => {
 
       // Draw 3 vertical cortical columns in 3D
       const cols = [
-        { name: "Visual Cortex Assembly (V1)", offset: -120, colColor: "#3B82F6" },
-        { name: "Auditory Processing Hub", offset: 0, colColor: "#10B981" },
-        { name: "Somatosensory Associator", offset: 120, colColor: "#EC4899" }
+        { name: "Visual Cortex Assembly (V1)", offset: -120, colColor: "#cfbda8" },
+        { name: "Auditory Processing Hub", offset: 0, colColor: "#92a88e" },
+        { name: "Somatosensory Associator", offset: 120, colColor: "#cf7d61" }
       ];
 
       cols.forEach((col, idx) => {
@@ -384,7 +384,7 @@ export const RhythmicCorticalSynchronizer3D: React.FC = () => {
   }, [gammaFreq, phaseAlignment, isRotating]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
           <Activity size={16} className="text-emerald-400" />
@@ -395,16 +395,16 @@ export const RhythmicCorticalSynchronizer3D: React.FC = () => {
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           CROSS-FREQUENCY OSCILLATORY COUPLING MODEL
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>GAMMA BAND CARRIER FREQUENCY</span>
             <span className="text-emerald-400 font-bold">{gammaFreq} Hz</span>
           </div>
@@ -418,9 +418,9 @@ export const RhythmicCorticalSynchronizer3D: React.FC = () => {
           />
         </div>
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>PHASE ALIGNMENT (BINDING)</span>
-            <span className="text-[#00F2FE] font-bold">{phaseAlignment}% SYNCHRONY</span>
+            <span className="text-[#92a88e] font-bold">{phaseAlignment}% SYNCHRONY</span>
           </div>
           <input
             type="range"
@@ -428,12 +428,12 @@ export const RhythmicCorticalSynchronizer3D: React.FC = () => {
             max="100"
             value={phaseAlignment}
             onChange={(e) => setPhaseAlignment(parseInt(e.target.value))}
-            className="w-full accent-[#00F2FE] h-1 bg-white/10 rounded-lg cursor-pointer"
+            className="w-full accent-[#92a88e] h-1 bg-white/10 rounded-lg cursor-pointer"
           />
         </div>
         <button
           onClick={() => setIsRotating(!isRotating)}
-          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
+          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-earth-parchment font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
         >
           <RefreshCw size={10} className={isRotating ? "animate-spin-slow" : ""} />
           <span>{isRotating ? "PAUSE COLUMN SPIN" : "SPIN COLUMNS"}</span>
@@ -477,7 +477,7 @@ export const DirectPrefrontalStimulator3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -539,7 +539,7 @@ export const DirectPrefrontalStimulator3D: React.FC = () => {
       // Anode (+)
       ctx.beginPath();
       ctx.arc(anodeX, anodeY, 8, 0, Math.PI * 2);
-      ctx.fillStyle = "#EF4444";
+      ctx.fillStyle = "#cf7d61";
       ctx.fill();
       ctx.font = "bold 9px sans-serif";
       ctx.fillStyle = "#FFFFFF";
@@ -548,7 +548,7 @@ export const DirectPrefrontalStimulator3D: React.FC = () => {
       // Cathode (-)
       ctx.beginPath();
       ctx.arc(cathodeX, cathodeY, 8, 0, Math.PI * 2);
-      ctx.fillStyle = "#3B82F6";
+      ctx.fillStyle = "#cfbda8";
       ctx.fill();
       ctx.font = "bold 9px sans-serif";
       ctx.fillStyle = "#FFFFFF";
@@ -587,7 +587,7 @@ export const DirectPrefrontalStimulator3D: React.FC = () => {
   }, [currentMA, electrodeConfig, isStimulating]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
           <Cpu size={16} className="text-amber-500" />
@@ -596,34 +596,34 @@ export const DirectPrefrontalStimulator3D: React.FC = () => {
             <h4 className="font-sans text-xs font-bold text-white">Transcranial Direct Current Neuromodulator 3D</h4>
           </div>
         </div>
-        <div className="flex bg-black/40 rounded-lg p-0.5 border border-white/5 font-mono text-[9px]">
+        <div className="flex bg-black/40 rounded-lg p-0.5 border border-earth-clay/10 font-mono text-[9px]">
           <button
             onClick={() => setElectrodeConfig("frontoparietal")}
-            className={`py-1 px-2.5 rounded font-bold transition-all ${electrodeConfig === "frontoparietal" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "text-slate-400"}`}
+            className={`py-1 px-2.5 rounded font-bold transition-all ${electrodeConfig === "frontoparietal" ? "bg-earth-clay/10 text-earth-bark border border-earth-clay/20" : "text-earth-sand/70"}`}
           >
             DLPFC COGNITIVE SETUP
           </button>
           <button
             onClick={() => setElectrodeConfig("motor")}
-            className={`py-1 px-2.5 rounded font-bold transition-all ${electrodeConfig === "motor" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" : "text-slate-400"}`}
+            className={`py-1 px-2.5 rounded font-bold transition-all ${electrodeConfig === "motor" ? "bg-earth-clay/10 text-earth-bark border border-earth-clay/20" : "text-earth-sand/70"}`}
           >
             MOTOR CORTEX SETUP
           </button>
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           STIMULATION FIELD MODEL: {electrodeConfig.toUpperCase()}
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>STIMULUS AMPLITUDE (CURRENT)</span>
-            <span className="text-amber-400 font-bold">{currentMA} mA</span>
+            <span className="text-earth-bark font-bold">{currentMA} mA</span>
           </div>
           <input
             type="range"
@@ -640,14 +640,14 @@ export const DirectPrefrontalStimulator3D: React.FC = () => {
             onClick={() => setIsStimulating(!isStimulating)}
             className={`w-full py-2 px-4 rounded font-bold border transition-all text-center ${
               isStimulating 
-                ? "bg-red-500/15 border-red-500/30 text-red-400 hover:bg-red-500/25" 
+                ? "bg-red-500/15 border-red-500/30 text-earth-bark hover:bg-red-500/25" 
                 : "bg-emerald-500/15 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25"
             }`}
           >
             {isStimulating ? "DEACTIVATE FIELD GENERATOR" : "ENGAGE CURRENT FIELD"}
           </button>
         </div>
-        <div className="p-2.5 bg-[#0F172A] border border-white/5 rounded-lg flex items-center space-x-2 text-slate-400 text-[9px] leading-snug">
+        <div className="p-2.5 bg-[#0F172A] border border-earth-clay/10 rounded-lg flex items-center space-x-2 text-earth-sand/70 text-[9px] leading-snug">
           <Shield size={12} className="text-emerald-500 shrink-0" />
           <span>Constant direct current (tDCS) alters resting membrane potentials, promoting long-term potentiation (LTP) in local prefrontal areas.</span>
         </div>
@@ -690,7 +690,7 @@ export const HyperactiveAgencyDetector3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -699,7 +699,7 @@ export const HyperactiveAgencyDetector3D: React.FC = () => {
       // Draw 3D scanning sonar sweeping line
       if (isScanning) {
         const angle = (t * 0.02) % (Math.PI * 2);
-        ctx.strokeStyle = "rgba(16, 185, 129, 0.08)";
+        ctx.strokeStyle = "rgba(146, 168, 142, 0.08)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(cx, cy);
@@ -710,7 +710,7 @@ export const HyperactiveAgencyDetector3D: React.FC = () => {
         for (let r = 30; r <= 120; r += 30) {
           ctx.beginPath();
           ctx.arc(cx, cy, r, 0, Math.PI * 2);
-          ctx.strokeStyle = "rgba(16, 185, 129, 0.05)";
+          ctx.strokeStyle = "rgba(146, 168, 142, 0.05)";
           ctx.stroke();
         }
       }
@@ -748,14 +748,14 @@ export const HyperactiveAgencyDetector3D: React.FC = () => {
         // Entity Core Node glowing red
         ctx.beginPath();
         ctx.arc(cx, cy - 5, 5 + Math.sin(t * 0.1) * 2, 0, Math.PI * 2);
-        ctx.fillStyle = "#EF4444";
-        ctx.shadowColor = "#EF4444";
+        ctx.fillStyle = "#cf7d61";
+        ctx.shadowColor = "#cf7d61";
         ctx.shadowBlur = 12;
         ctx.fill();
         ctx.shadowBlur = 0;
 
         ctx.font = "bold 9px monospace";
-        ctx.fillStyle = "#EF4444";
+        ctx.fillStyle = "#cf7d61";
         ctx.fillText("HADD: AGENCY OVER-ATTRIBUTION", cx - 80, cy - 40);
         ctx.font = "8px monospace";
         ctx.fillStyle = "rgba(239, 68, 68, 0.7)";
@@ -778,29 +778,29 @@ export const HyperactiveAgencyDetector3D: React.FC = () => {
   }, [threatBias, noiseInput, isScanning]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
-          <Eye size={16} className="text-red-400" />
+          <Eye size={16} className="text-earth-bark" />
           <div>
-            <span className="font-mono text-[9px] text-red-400 font-bold block uppercase">CHAPTER 5: COGNITIVE SCIENCE OF RELIGION</span>
+            <span className="font-mono text-[9px] text-earth-bark font-bold block uppercase">CHAPTER 5: COGNITIVE SCIENCE OF RELIGION</span>
             <h4 className="font-sans text-xs font-bold text-white">Hyperactive Agency Detection Device (HADD) Simulator 3D</h4>
           </div>
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           PATTERN CLUSTERING SIGNAL CLASSIFIER
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>SURVIVAL THREAT BIAS</span>
-            <span className="text-red-400 font-bold">{threatBias}% (HYPERACTIVE)</span>
+            <span className="text-earth-bark font-bold">{threatBias}% (HYPERACTIVE)</span>
           </div>
           <input
             type="range"
@@ -812,9 +812,9 @@ export const HyperactiveAgencyDetector3D: React.FC = () => {
           />
         </div>
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>ENVIRONMENTAL WIND/LEAF NOISE</span>
-            <span className="text-slate-400 font-bold">{noiseInput}% LEVEL</span>
+            <span className="text-earth-sand/70 font-bold">{noiseInput}% LEVEL</span>
           </div>
           <input
             type="range"
@@ -827,7 +827,7 @@ export const HyperactiveAgencyDetector3D: React.FC = () => {
         </div>
         <button
           onClick={() => setIsScanning(!isScanning)}
-          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
+          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-earth-parchment font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
         >
           <Compass size={10} className={isScanning ? "animate-pulse" : ""} />
           <span>{isScanning ? "FREEZE SCAN RADAR" : "SCAN SIGNAL"}</span>
@@ -892,7 +892,7 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -926,8 +926,8 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
       if (!flatline) {
         // Draw interconnected spiking cortical columns firing
         const count = 22;
-        ctx.fillStyle = perfusion > 45 ? "rgba(59, 130, 246, 0.5)" : `rgba(236, 72, 153, ${surgeFactor * 0.5})`;
-        ctx.strokeStyle = perfusion > 45 ? "rgba(59, 130, 246, 0.2)" : `rgba(236, 72, 153, ${surgeFactor * 0.3})`;
+        ctx.fillStyle = perfusion > 45 ? "rgba(207, 189, 168, 0.5)" : `rgba(207, 125, 97, ${surgeFactor * 0.5})`;
+        ctx.strokeStyle = perfusion > 45 ? "rgba(207, 189, 168, 0.2)" : `rgba(207, 125, 97, ${surgeFactor * 0.3})`;
         ctx.lineWidth = 0.8;
 
         const nodes: { x: number; y: number; active: boolean }[] = [];
@@ -960,9 +960,9 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
         nodes.forEach((node) => {
           ctx.beginPath();
           ctx.arc(node.x, node.y, node.active ? 4 + surgeFactor * 3 : 2, 0, Math.PI * 2);
-          ctx.fillStyle = perfusion > 45 ? "#3B82F6" : "#EC4899";
+          ctx.fillStyle = perfusion > 45 ? "#cfbda8" : "#cf7d61";
           if (node.active && perfusion <= 45) {
-            ctx.shadowColor = "#EC4899";
+            ctx.shadowColor = "#cf7d61";
             ctx.shadowBlur = 15;
           }
           ctx.fill();
@@ -972,10 +972,10 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
         // Overlay status text
         ctx.font = "bold 9px monospace";
         if (perfusion > 45) {
-          ctx.fillStyle = "#3B82F6";
+          ctx.fillStyle = "#cfbda8";
           ctx.fillText("Baseline EEG: Synchronous Low Amplitude Waves", cx - 110, cy - 70);
         } else {
-          ctx.fillStyle = "#EC4899";
+          ctx.fillStyle = "#cf7d61";
           ctx.fillText("CLINICAL HYPOXIC GAMMA SURGE ACTIVE (END-OF-LIFE)", cx - 120, cy - 70);
         }
       } else {
@@ -998,7 +998,7 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
       // Draw timeline gauge
       ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
       ctx.fillRect(cx - 150, h - 35, 300, 10);
-      ctx.fillStyle = perfusion > 45 ? "#3B82F6" : perfusion > 5 ? "#EC4899" : "#475569";
+      ctx.fillStyle = perfusion > 45 ? "#cfbda8" : perfusion > 5 ? "#cf7d61" : "#475569";
       ctx.fillRect(cx - 150, h - 35, (perfusion / 100) * 300, 10);
 
       t++;
@@ -1010,12 +1010,12 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
   }, [perfusion]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
-          <Activity size={16} className="text-pink-400 animate-pulse" />
+          <Activity size={16} className="text-earth-sage animate-pulse" />
           <div>
-            <span className="font-mono text-[9px] text-pink-400 font-bold block uppercase">CHAPTER 6: PHYSIOLOGY OF DEATH</span>
+            <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase">CHAPTER 6: PHYSIOLOGY OF DEATH</span>
             <h4 className="font-sans text-xs font-bold text-white">Post-Arrest Hypoxic Gamma Surge Simulator 3D</h4>
           </div>
         </div>
@@ -1028,7 +1028,7 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
           }}
           className={`py-1 px-3 rounded font-mono text-[9px] font-bold border transition-all ${
             arrestTriggered 
-              ? "bg-red-500/15 border-red-500/30 text-red-400" 
+              ? "bg-red-500/15 border-red-500/30 text-earth-bark" 
               : "bg-emerald-500/15 border-emerald-500/30 text-emerald-400"
           }`}
         >
@@ -1036,26 +1036,26 @@ export const HypoxicSurgeSimulator3D: React.FC = () => {
         </button>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           CORTICAL POWER SPECTRA GRAPH
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[10px]">
-        <div className="p-3 bg-black/40 border border-white/5 rounded-xl space-y-1">
-          <span className="text-slate-500 font-bold uppercase block text-[8px]">OXYGEN PERFUSION RATIO</span>
+        <div className="p-3 bg-black/40 border border-earth-clay/10 rounded-xl space-y-1">
+          <span className="text-earth-sand/40 font-bold uppercase block text-[8px]">OXYGEN PERFUSION RATIO</span>
           <div className="flex items-center space-x-3">
-            <span className={`text-sm font-bold ${perfusion > 45 ? "text-blue-400" : perfusion > 5 ? "text-pink-400" : "text-slate-500"}`}>
+            <span className={`text-sm font-bold ${perfusion > 45 ? "text-earth-sage" : perfusion > 5 ? "text-earth-sage" : "text-earth-sand/40"}`}>
               {perfusion.toFixed(1)}% ATP STORES
             </span>
-            <span className="text-[8.5px] text-slate-500">
+            <span className="text-[8.5px] text-earth-sand/40">
               {perfusion > 45 ? "[AEROBIC METABOLISM]" : perfusion > 5 ? "[IONIC DEPOLARIZATION SURGE]" : "[CELLULAR METABOLIC FLATLINE]"}
             </span>
           </div>
         </div>
-        <div className="p-3 bg-[#0B0F19]/80 border border-white/5 rounded-xl flex items-center space-x-2 text-[9px] text-slate-400 leading-normal font-sans">
+        <div className="p-3 bg-[#231a16]/80 border border-earth-clay/10 rounded-xl flex items-center space-x-2 text-[9px] text-earth-sand/70 leading-normal font-sans">
           <HelpCircle size={14} className="text-amber-500 shrink-0" />
           <span>At cardiac arrest, oxygen depletion leads to depolarization blocks. This triggers a short-lived high-amplitude synchronized gamma burst associated with structured end-of-life visions.</span>
         </div>
@@ -1098,7 +1098,7 @@ export const CryoSlicingVectorizer3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -1144,7 +1144,7 @@ export const CryoSlicingVectorizer3D: React.FC = () => {
       const cutZ = isSlicing ? (t * 0.4 * laserSpeed) % 50 : 20;
       const laserY = blockY - 30 + cutZ;
 
-      ctx.strokeStyle = "#EC4899";
+      ctx.strokeStyle = "#cf7d61";
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(blockX - 70, laserY);
@@ -1171,7 +1171,7 @@ export const CryoSlicingVectorizer3D: React.FC = () => {
       }
 
       // Draw connections
-      ctx.strokeStyle = isHiRes ? "rgba(0, 242, 254, 0.4)" : "rgba(239, 68, 68, 0.15)";
+      ctx.strokeStyle = isHiRes ? "rgba(146, 168, 142, 0.4)" : "rgba(239, 68, 68, 0.15)";
       ctx.lineWidth = isHiRes ? 1.5 : 0.6;
       for (let i = 0; i < synCount; i++) {
         const s1 = syns[i];
@@ -1191,16 +1191,16 @@ export const CryoSlicingVectorizer3D: React.FC = () => {
       syns.forEach((s) => {
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.linked ? 3 : 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = s.linked ? "#00F2FE" : "#EF4444";
+        ctx.fillStyle = s.linked ? "#92a88e" : "#cf7d61";
         ctx.fill();
       });
 
       // Overlay text
       ctx.font = "bold 9px monospace";
-      ctx.fillStyle = "#EC4899";
+      ctx.fillStyle = "#cf7d61";
       ctx.fillText("CRYOTOME SECTONING (3D)", blockX - 60, blockY - 45);
 
-      ctx.fillStyle = isHiRes ? "#00F2FE" : "#EF4444";
+      ctx.fillStyle = isHiRes ? "#92a88e" : "#cf7d61";
       ctx.fillText(isHiRes ? "RECONSTRUCTED METRIC CONNECTOME: COMPLETE" : "RECONSTRUCTION FAILED: PATHWAYS SEVERED", rcx - 90, rcy - 50);
 
       t++;
@@ -1212,29 +1212,29 @@ export const CryoSlicingVectorizer3D: React.FC = () => {
   }, [sliceThicnkess, laserSpeed, isSlicing]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
-          <Layers size={16} className="text-pink-400" />
+          <Layers size={16} className="text-earth-sage" />
           <div>
-            <span className="font-mono text-[9px] text-pink-400 font-bold block uppercase">CHAPTER 7: WHOLE-BRAIN EMULATION</span>
+            <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase">CHAPTER 7: WHOLE-BRAIN EMULATION</span>
             <h4 className="font-sans text-xs font-bold text-white">Nanometer Slicing Connectome Reconstructor 3D</h4>
           </div>
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           CRYOMAPPING SYNAPTIC DESTRUCTIVE VECTOR MATRIX
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>SLICING THICKNESS</span>
-            <span className={`${sliceThicnkess < 25 ? "text-cyan-400" : "text-red-400"} font-bold`}>{sliceThicnkess} nm</span>
+            <span className={`${sliceThicnkess < 25 ? "text-earth-sage" : "text-earth-bark"} font-bold`}>{sliceThicnkess} nm</span>
           </div>
           <input
             type="range"
@@ -1242,13 +1242,13 @@ export const CryoSlicingVectorizer3D: React.FC = () => {
             max="100"
             value={sliceThicnkess}
             onChange={(e) => setSliceThickness(parseInt(e.target.value))}
-            className="w-full h-1 bg-white/10 rounded-lg cursor-pointer accent-pink-500"
+            className="w-full h-1 bg-white/10 rounded-lg cursor-pointer accent-earth-bark"
           />
         </div>
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>LASER CUT ROTATION RATE</span>
-            <span className="text-slate-400 font-bold">{laserSpeed}x SPEED</span>
+            <span className="text-earth-sand/70 font-bold">{laserSpeed}x SPEED</span>
           </div>
           <input
             type="range"
@@ -1261,7 +1261,7 @@ export const CryoSlicingVectorizer3D: React.FC = () => {
         </div>
         <button
           onClick={() => setIsSlicing(!isSlicing)}
-          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
+          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-earth-parchment font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
         >
           <RefreshCw size={10} className={isSlicing ? "animate-spin-slow" : ""} />
           <span>{isSlicing ? "PAUSE BLADE MOTION" : "START BLADE"}</span>
@@ -1305,7 +1305,7 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -1320,7 +1320,7 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
         ctx.stroke();
       }
 
-      ctx.fillStyle = "rgba(0, 242, 254, 0.2)";
+      ctx.fillStyle = "rgba(146, 168, 142, 0.2)";
       ctx.beginPath();
       ctx.arc(cx, cy, 18, 0, Math.PI * 2);
       ctx.fill();
@@ -1330,8 +1330,8 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
       const probeX = cx - 140 + ((t * pulseSpeed) % 150);
 
       if (probeX < cx) {
-        ctx.fillStyle = "#EF4444";
-        ctx.shadowColor = "#EF4444";
+        ctx.fillStyle = "#cf7d61";
+        ctx.shadowColor = "#cf7d61";
         ctx.shadowBlur = 8;
         ctx.beginPath();
         ctx.arc(probeX, cy, 3, 0, Math.PI * 2);
@@ -1358,7 +1358,7 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
         // Repelling logic when probe hits shield
         const hitShield = probeX >= cx - shieldR - 5 && probeX <= cx - shieldR + 5;
         
-        ctx.strokeStyle = hitShield ? "#10B981" : `rgba(16, 185, 129, ${protectionOpacity})`;
+        ctx.strokeStyle = hitShield ? "#92a88e" : `rgba(146, 168, 142, ${protectionOpacity})`;
         ctx.lineWidth = hitShield ? 3.5 : 1.5;
         ctx.beginPath();
         ctx.arc(cx, cy, shieldR, 0, Math.PI * 2);
@@ -1366,7 +1366,7 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
 
         // draw deflecting sparks on impact
         if (hitShield) {
-          ctx.strokeStyle = "#10B981";
+          ctx.strokeStyle = "#92a88e";
           ctx.beginPath();
           ctx.moveTo(cx - shieldR, cy);
           ctx.lineTo(cx - shieldR - 15, cy - 10);
@@ -1375,23 +1375,23 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
           ctx.stroke();
 
           ctx.font = "bold 9px monospace";
-          ctx.fillStyle = "#10B981";
+          ctx.fillStyle = "#92a88e";
           ctx.fillText("SOVEREIGNTY SHIELD BLOCKED EXTRACT!", cx - 90, cy + 85);
         }
 
         ctx.font = "bold 9px monospace";
-        ctx.fillStyle = "#10B981";
+        ctx.fillStyle = "#92a88e";
         ctx.fillText("COGNITIVE LIBERTY CHARTER ACTIVE", cx - 85, cy - 85);
       } else {
         // Shield down! Probe leaks all the way into internal core
         const breached = probeX >= cx - 20;
         if (breached) {
-          ctx.fillStyle = "#EF4444";
+          ctx.fillStyle = "#cf7d61";
           ctx.font = "bold 9px monospace";
           ctx.fillText("PRIVACY BREACH: MENTAL REVENUE DATA LEAKED", cx - 110, cy + 85);
         }
         ctx.font = "bold 9px monospace";
-        ctx.fillStyle = "#EF4444";
+        ctx.fillStyle = "#cf7d61";
         ctx.fillText("COGNITIVE SOVEREIGNTY EXPOSED", cx - 80, cy - 85);
       }
 
@@ -1404,7 +1404,7 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
   }, [shieldActive, regulatoryDensity, probeIntensity]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
           <Lock size={16} className="text-emerald-400" />
@@ -1418,23 +1418,23 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
           className={`py-1 px-3 rounded font-mono text-[9px] font-bold border transition-all ${
             shieldActive 
               ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-400" 
-              : "bg-red-500/15 border-red-500/30 text-red-400"
+              : "bg-red-500/15 border-red-500/30 text-earth-bark"
           }`}
         >
           {shieldActive ? "SHIELD GUARD ONLINE" : "DISABLE SOVEREIGNTY SHIELD"}
         </button>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           COGNITIVE DATA EXTRAPOLATOR IMMERSION
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>REGULATORY PRIVACY DENSITY</span>
             <span className="text-emerald-400 font-bold">{regulatoryDensity}% DECREE</span>
           </div>
@@ -1448,9 +1448,9 @@ export const CognitiveLibertyPrivacy3D: React.FC = () => {
           />
         </div>
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>EXTERNAL ADVERTISING PROBE FREQUENCY</span>
-            <span className="text-red-400 font-bold">{probeIntensity}% INTENSITY</span>
+            <span className="text-earth-bark font-bold">{probeIntensity}% INTENSITY</span>
           </div>
           <input
             type="range"
@@ -1500,7 +1500,7 @@ export const OrchORMicrotubuleCoherence3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -1533,8 +1533,8 @@ export const OrchORMicrotubuleCoherence3D: React.FC = () => {
           ctx.arc(sx, sy, 3 + (sz / rSize) * 1.5, 0, Math.PI * 2);
 
           if (inSuperposition) {
-            ctx.fillStyle = t % 2 === 0 ? "#00F2FE" : "#EC4899";
-            ctx.shadowColor = "#00F2FE";
+            ctx.fillStyle = t % 2 === 0 ? "#92a88e" : "#cf7d61";
+            ctx.shadowColor = "#92a88e";
             ctx.shadowBlur = 10;
           } else {
             ctx.fillStyle = "rgba(71, 85, 105, 0.4)";
@@ -1554,7 +1554,7 @@ export const OrchORMicrotubuleCoherence3D: React.FC = () => {
         ctx.lineTo(cx + 150, cy);
         ctx.stroke();
 
-        ctx.fillStyle = "#A78BFA";
+        ctx.fillStyle = "#cfbda8";
         ctx.font = "bold 9.5px monospace";
         ctx.fillText("OBJECTIVE WAVE COLLAPSE (ORCH-OR PROTOCONSCIOUSNESS TRIGGER)", cx - 170, cy - 60);
       } else {
@@ -1574,29 +1574,29 @@ export const OrchORMicrotubuleCoherence3D: React.FC = () => {
   }, [decoherence, coherenceRate, isPlaying]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
-          <Sparkles size={16} className="text-purple-400" />
+          <Sparkles size={16} className="text-earth-sage" />
           <div>
-            <span className="font-mono text-[9px] text-purple-400 font-bold block uppercase">CHAPTER 9: FUTURE FRONTIERS</span>
+            <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase">CHAPTER 9: FUTURE FRONTIERS</span>
             <h4 className="font-sans text-xs font-bold text-white">Quantum Orchestrated Objective Reduction (Orch-OR) 3D</h4>
           </div>
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           MICROTUBULE TUBULIN LATTICE COHERENCE MODEL
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>ENVIRONMENTAL DECOHERENCE (THERMAL NOISE)</span>
-            <span className="text-red-400 font-bold">{decoherence}% TEMP</span>
+            <span className="text-earth-bark font-bold">{decoherence}% TEMP</span>
           </div>
           <input
             type="range"
@@ -1608,9 +1608,9 @@ export const OrchORMicrotubuleCoherence3D: React.FC = () => {
           />
         </div>
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>QUANTUM RESOUNDING PUMP</span>
-            <span className="text-[#00F2FE] font-bold">{coherenceRate}% COHERENCE</span>
+            <span className="text-[#92a88e] font-bold">{coherenceRate}% COHERENCE</span>
           </div>
           <input
             type="range"
@@ -1618,12 +1618,12 @@ export const OrchORMicrotubuleCoherence3D: React.FC = () => {
             max="100"
             value={coherenceRate}
             onChange={(e) => setCoherenceRate(parseInt(e.target.value))}
-            className="w-full accent-[#00F2FE] h-1 bg-white/10 rounded-lg cursor-pointer"
+            className="w-full accent-[#92a88e] h-1 bg-white/10 rounded-lg cursor-pointer"
           />
         </div>
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
+          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-earth-parchment font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
         >
           <RefreshCw size={10} className={isPlaying ? "animate-spin-slow" : ""} />
           <span>{isPlaying ? "FREEZE COHERENT QUANTUM STATES" : "ENGAGE COHERENCE PUMP"}</span>
@@ -1668,7 +1668,7 @@ export const OntologicalConvergence3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "rgba(4, 8, 16, 1)";
+      ctx.fillStyle = "rgba(27, 20, 17, 1)";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -1684,9 +1684,9 @@ export const OntologicalConvergence3D: React.FC = () => {
       const separation = maxSeparation * (1.0 - synthesisLevel / 100);
 
       const pillars = [
-        { name: "NEUROBIOLOGICAL REGISTRY (NCC)", angle: 0, color: "#3B82F6" },
-        { name: "SILICON EMULATION SUBSTRATES (WBE)", angle: (Math.PI * 2) / 3, color: "#10B981" },
-        { name: "COGNITIVE SOVEREIGNTY (ETHICS)", angle: (Math.PI * 4) / 3, color: "#EC4899" }
+        { name: "NEUROBIOLOGICAL REGISTRY (NCC)", angle: 0, color: "#cfbda8" },
+        { name: "SILICON EMULATION SUBSTRATES (WBE)", angle: (Math.PI * 2) / 3, color: "#92a88e" },
+        { name: "COGNITIVE SOVEREIGNTY (ETHICS)", angle: (Math.PI * 4) / 3, color: "#cf7d61" }
       ];
 
       // Draw pillars
@@ -1698,7 +1698,7 @@ export const OntologicalConvergence3D: React.FC = () => {
         // Glow ring for each separate pillar
         ctx.beginPath();
         ctx.arc(px, py, 14, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${p.color === "#3B82F6" ? "59, 130, 246" : p.color === "#10B981" ? "16, 185, 129" : "236, 72, 153"}, 0.2)`;
+        ctx.fillStyle = `rgba(${p.color === "#cfbda8" ? "59, 130, 246" : p.color === "#92a88e" ? "16, 185, 129" : "236, 72, 153"}, 0.2)`;
         ctx.fill();
 
         // Solid core
@@ -1756,7 +1756,7 @@ export const OntologicalConvergence3D: React.FC = () => {
   }, [synthesisLevel, isRotating]);
 
   return (
-    <div className="my-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md p-5 space-y-4">
+    <div className="my-6 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 backdrop-blur-md p-5 space-y-4">
       <div className="flex items-center justify-between border-b border-white/10 pb-3">
         <div className="flex items-center space-x-2.5">
           <Compass size={16} className="text-amber-500 animate-spin-slow" />
@@ -1767,18 +1767,18 @@ export const OntologicalConvergence3D: React.FC = () => {
         </div>
       </div>
 
-      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-black/50 border border-white/5 overflow-hidden">
+      <div ref={containerRef} className="relative h-60 w-full rounded-xl bg-earth-dark/50 border border-earth-clay/10 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-slate-500 bg-black/50 py-0.5 px-1.5 rounded border border-white/5">
+        <div className="absolute top-2 left-2 pointer-events-none font-mono text-[8px] text-earth-sand/40 bg-black/50 py-0.5 px-1.5 rounded border border-earth-clay/10">
           CYBERNETIC COGNITION UNIFIED CORE
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[10px]">
         <div className="space-y-1">
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-earth-sand/70">
             <span>EMPIRICAL INTERDISCIPLINARY SYNTHESIS</span>
-            <span className="text-amber-400 font-bold">{synthesisLevel}% CONVERGENCE</span>
+            <span className="text-earth-bark font-bold">{synthesisLevel}% CONVERGENCE</span>
           </div>
           <input
             type="range"
@@ -1791,7 +1791,7 @@ export const OntologicalConvergence3D: React.FC = () => {
         </div>
         <button
           onClick={() => setIsRotating(!isRotating)}
-          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
+          className="py-1.5 px-3 rounded bg-white/5 border border-white/10 hover:bg-white/10 text-earth-parchment font-bold transition-all flex items-center justify-center space-x-1.5 self-end"
         >
           <RefreshCw size={10} className={isRotating ? "animate-spin-slow" : ""} />
           <span>{isRotating ? "FREEZE ONTOLOGICAL MATRIX" : "ENGAGE SPIN"}</span>

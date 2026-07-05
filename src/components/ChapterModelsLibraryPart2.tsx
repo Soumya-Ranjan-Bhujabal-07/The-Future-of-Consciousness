@@ -35,7 +35,7 @@ export const HardProblemChasm3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "#040810";
+      ctx.fillStyle = "#1b1411";
       ctx.fillRect(0, 0, w, h);
 
       const cy = h / 2;
@@ -68,7 +68,7 @@ export const HardProblemChasm3D: React.FC = () => {
 
       // Draw left cliff neural lattice spikes (Cyan dots + pulses)
       const dotCount = 8;
-      ctx.fillStyle = "#00F2FE";
+      ctx.fillStyle = "#92a88e";
       for (let i = 0; i < dotCount; i++) {
         const dx = 20 + (i * (w * 0.3 - 40)) / dotCount;
         const dy = cy + 45 + (i % 3) * 15;
@@ -79,8 +79,8 @@ export const HardProblemChasm3D: React.FC = () => {
 
       // Draw right cliff subjective qualia colors (Pink/Purple radial gradient)
       const grad = ctx.createRadialGradient(w * 0.82, cy + 55, 5, w * 0.82, cy + 55, 45);
-      grad.addColorStop(0, "rgba(236, 72, 153, 0.3)");
-      grad.addColorStop(1, "rgba(236, 72, 153, 0)");
+      grad.addColorStop(0, "rgba(207, 125, 97, 0.3)");
+      grad.addColorStop(1, "rgba(207, 125, 97, 0)");
       ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(w * 0.82, cy + 55, 45, 0, Math.PI * 2);
@@ -101,7 +101,7 @@ export const HardProblemChasm3D: React.FC = () => {
       } else {
         // Spark attempts stretching out but falling short
         const sparkLength = (objectiveRes / 100) * (w * 0.15);
-        ctx.strokeStyle = "rgba(0, 242, 254, 0.5)";
+        ctx.strokeStyle = "rgba(146, 168, 142, 0.5)";
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(w * 0.35, cy + 30);
@@ -109,14 +109,14 @@ export const HardProblemChasm3D: React.FC = () => {
         ctx.stroke();
 
         ctx.font = "bold 9px monospace";
-        ctx.fillStyle = "#EF4444";
+        ctx.fillStyle = "#cf7d61";
         ctx.fillText("EXPLANATORY GAP", w * 0.44, cy + 45);
       }
 
       ctx.font = "8px monospace";
-      ctx.fillStyle = "#00F2FE";
+      ctx.fillStyle = "#92a88e";
       ctx.fillText("PHYSICAL MECHANISMS [EEG/SPIKES]", 10, cy + 15);
-      ctx.fillStyle = "#EC4899";
+      ctx.fillStyle = "#cf7d61";
       ctx.fillText("FIRST-PERSON SUBJECTIVE QUALIA [BLUE/SAD]", w - 180, cy + 15);
 
       t++;
@@ -128,27 +128,27 @@ export const HardProblemChasm3D: React.FC = () => {
   }, [objectiveRes, phenomenalSens, bridgeFormed]);
 
   return (
-    <div className="my-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="my-5 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 p-4 space-y-3">
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
         <div className="flex items-center space-x-2">
-          <Zap size={14} className="text-pink-400" />
-          <span className="font-mono text-[9px] text-pink-400 font-bold block uppercase">CHAPTER 1 • MODEL 2</span>
+          <Zap size={14} className="text-earth-sage" />
+          <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase">CHAPTER 1 • MODEL 2</span>
           <h4 className="font-sans text-xs font-bold text-white">David Chalmers' Explanatory Gap Simulator</h4>
         </div>
       </div>
-      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-white/5">
+      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-earth-clay/10">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[9px]">
         <div className="space-y-1">
-          <span className="text-slate-500">OBJECTIVE RESOLUTION</span>
-          <input type="range" min="10" max="100" value={objectiveRes} onChange={(e) => setObjectiveRes(parseInt(e.target.value))} className="w-full accent-cyan-500 h-1 bg-white/10 rounded" />
+          <span className="text-earth-sand/40">OBJECTIVE RESOLUTION</span>
+          <input type="range" min="10" max="100" value={objectiveRes} onChange={(e) => setObjectiveRes(parseInt(e.target.value))} className="w-full accent-earth-sage h-1 bg-white/10 rounded" />
         </div>
         <div className="space-y-1">
-          <span className="text-slate-500">PHENOMENAL SENSITIVITY</span>
-          <input type="range" min="10" max="100" value={phenomenalSens} onChange={(e) => setPhenomenalSens(parseInt(e.target.value))} className="w-full accent-pink-500 h-1 bg-white/10 rounded" />
+          <span className="text-earth-sand/40">PHENOMENAL SENSITIVITY</span>
+          <input type="range" min="10" max="100" value={phenomenalSens} onChange={(e) => setPhenomenalSens(parseInt(e.target.value))} className="w-full accent-earth-bark h-1 bg-white/10 rounded" />
         </div>
-        <button onClick={() => setBridgeFormed(!bridgeFormed)} className={`py-1.5 rounded font-bold border transition-all ${bridgeFormed ? "bg-amber-500/10 border-amber-500/30 text-amber-400" : "bg-white/5 border-white/10 text-slate-300 hover:text-slate-200"}`}>
+        <button onClick={() => setBridgeFormed(!bridgeFormed)} className={`py-1.5 rounded font-bold border transition-all ${bridgeFormed ? "bg-earth-clay/10 border-amber-500/30 text-earth-bark" : "bg-white/5 border-white/10 text-earth-parchment hover:text-slate-200"}`}>
           {bridgeFormed ? "SEVER EXPLANATORY BRIDGE" : "BRIDGE COGNITIVE GAP"}
         </button>
       </div>
@@ -189,7 +189,7 @@ export const BiomimeticMemoryProcessor3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "#040810";
+      ctx.fillStyle = "#1b1411";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -202,13 +202,13 @@ export const BiomimeticMemoryProcessor3D: React.FC = () => {
       ctx.stroke();
 
       // CA3 cluster
-      ctx.fillStyle = "#10B981";
+      ctx.fillStyle = "#92a88e";
       ctx.beginPath();
       ctx.arc(cx - 50, cy, 7, 0, Math.PI * 2);
       ctx.fill();
 
       // CA1 cluster
-      ctx.fillStyle = "#3B82F6";
+      ctx.fillStyle = "#cfbda8";
       ctx.beginPath();
       ctx.arc(cx + 50, cy, 7, 0, Math.PI * 2);
       ctx.fill();
@@ -237,9 +237,9 @@ export const BiomimeticMemoryProcessor3D: React.FC = () => {
       }
 
       ctx.font = "8px monospace";
-      ctx.fillStyle = "#10B981";
+      ctx.fillStyle = "#92a88e";
       ctx.fillText("INPUT [CA3 PATHWAY]", cx - 110, cy + 20);
-      ctx.fillStyle = "#3B82F6";
+      ctx.fillStyle = "#cfbda8";
       ctx.fillText("OUTPUT [CA1 RECALL]", cx + 45, cy + 20);
       ctx.fillStyle = "#F59E0B";
       ctx.fillText("BIOMIMETIC CO-PROCESSOR", cx - 55, cy - 74);
@@ -253,7 +253,7 @@ export const BiomimeticMemoryProcessor3D: React.FC = () => {
   }, [prostheticGain, isProcessing]);
 
   return (
-    <div className="my-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="my-5 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 p-4 space-y-3">
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
         <div className="flex items-center space-x-2">
           <Cpu size={14} className="text-emerald-400" />
@@ -261,15 +261,15 @@ export const BiomimeticMemoryProcessor3D: React.FC = () => {
           <h4 className="font-sans text-xs font-bold text-white">Biomimetic Hippocampal Prosthetic Co-Processor</h4>
         </div>
       </div>
-      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-white/5">
+      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-earth-clay/10">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[9px]">
         <div className="space-y-1">
-          <span className="text-slate-500">PROSTHETIC TRANSDUCTION GAIN</span>
+          <span className="text-earth-sand/40">PROSTHETIC TRANSDUCTION GAIN</span>
           <input type="range" min="10" max="100" value={prostheticGain} onChange={(e) => setProstheticGain(parseInt(e.target.value))} className="w-full accent-amber-500 h-1 bg-white/10 rounded" />
         </div>
-        <button onClick={() => setIsProcessing(!isProcessing)} className={`py-1.5 rounded font-bold border transition-all ${isProcessing ? "bg-amber-500/10 border-amber-500/30 text-amber-400" : "bg-white/5 border-white/10 text-slate-300 hover:text-slate-200"}`}>
+        <button onClick={() => setIsProcessing(!isProcessing)} className={`py-1.5 rounded font-bold border transition-all ${isProcessing ? "bg-earth-clay/10 border-amber-500/30 text-earth-bark" : "bg-white/5 border-white/10 text-earth-parchment hover:text-slate-200"}`}>
           {isProcessing ? "PAUSE PROSTHETIC BYPASS" : "ENGAGE BIOMIMETIC SIGNAL"}
         </button>
       </div>
@@ -311,7 +311,7 @@ export const TemporalLobeResonator3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "#040810";
+      ctx.fillStyle = "#1b1411";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -331,14 +331,14 @@ export const TemporalLobeResonator3D: React.FC = () => {
       ctx.stroke();
 
       // Draw Temporal solenoids left/right emitting localized fields
-      ctx.fillStyle = "#EC4899";
+      ctx.fillStyle = "#cf7d61";
       ctx.fillRect(cx - 72, cy - 10, 10, 20); // Left temporal solenoid
       ctx.fillRect(cx + 62, cy - 10, 10, 20); // Right temporal solenoid
 
       if (isEmitting) {
         // Draw magnetic flux ripples
         const radius = 25 + (t % 35) * 1.5;
-        ctx.strokeStyle = `rgba(236, 72, 153, ${Math.max(0, 1.0 - (t % 35)/35) * (fieldStrength / 100)})`;
+        ctx.strokeStyle = `rgba(207, 125, 97, ${Math.max(0, 1.0 - (t % 35)/35) * (fieldStrength / 100)})`;
         ctx.lineWidth = 1.2;
 
         ctx.beginPath();
@@ -357,12 +357,12 @@ export const TemporalLobeResonator3D: React.FC = () => {
         ctx.fill();
 
         ctx.font = "bold 9px monospace";
-        ctx.fillStyle = "#A78BFA";
+        ctx.fillStyle = "#cfbda8";
         ctx.fillText(`TRANSCENDENT PRESENCE MEASURE: ${(fieldStrength * 1.4).toFixed(0)}`, cx - 85, cy + 4);
       }
 
       ctx.font = "8px monospace";
-      ctx.fillStyle = "#EC4899";
+      ctx.fillStyle = "#cf7d61";
       ctx.fillText("LEFT TEMPORAL COIL", cx - 145, cy + 25);
       ctx.fillText("RIGHT TEMPORAL COIL", cx + 75, cy + 25);
 
@@ -375,27 +375,27 @@ export const TemporalLobeResonator3D: React.FC = () => {
   }, [fieldStrength, resonanceHz, isEmitting]);
 
   return (
-    <div className="my-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="my-5 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 p-4 space-y-3">
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
         <div className="flex items-center space-x-2">
-          <Eye size={14} className="text-purple-400" />
-          <span className="font-mono text-[9px] text-purple-400 font-bold block uppercase">CHAPTER 5 • MODEL 2</span>
+          <Eye size={14} className="text-earth-sage" />
+          <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase">CHAPTER 5 • MODEL 2</span>
           <h4 className="font-sans text-xs font-bold text-white">Temporal Lobe Magnetic Resonance Simulator ("God Helmet")</h4>
         </div>
       </div>
-      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-white/5">
+      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-earth-clay/10">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-[9px]">
         <div className="space-y-1">
-          <span className="text-slate-500">MAGNETIC FIELD FLUX STRENGTH</span>
-          <input type="range" min="10" max="100" value={fieldStrength} onChange={(e) => setFieldStrength(parseInt(e.target.value))} className="w-full accent-pink-500 h-1 bg-white/10 rounded" />
+          <span className="text-earth-sand/40">MAGNETIC FIELD FLUX STRENGTH</span>
+          <input type="range" min="10" max="100" value={fieldStrength} onChange={(e) => setFieldStrength(parseInt(e.target.value))} className="w-full accent-earth-bark h-1 bg-white/10 rounded" />
         </div>
         <div className="space-y-1">
-          <span className="text-slate-500">COIL FREQUENCY RATIO</span>
+          <span className="text-earth-sand/40">COIL FREQUENCY RATIO</span>
           <input type="range" min="2" max="20" value={resonanceHz} onChange={(e) => setResonanceHz(parseInt(e.target.value))} className="w-full accent-purple-500 h-1 bg-white/10 rounded" />
         </div>
-        <button onClick={() => setIsEmitting(!isEmitting)} className={`py-1.5 rounded font-bold border transition-all ${isEmitting ? "bg-pink-500/10 border-pink-500/30 text-pink-400" : "bg-white/5 border-white/10 text-slate-300 hover:text-slate-200"}`}>
+        <button onClick={() => setIsEmitting(!isEmitting)} className={`py-1.5 rounded font-bold border transition-all ${isEmitting ? "bg-earth-clay/10 border-earth-clay/20 text-earth-sage" : "bg-white/5 border-white/10 text-earth-parchment hover:text-slate-200"}`}>
           {isEmitting ? "STOP TRANSCENDENT INDUCTION" : "ENGAGE RESONANT HELMET"}
         </button>
       </div>
@@ -436,14 +436,14 @@ export const OBEDecouplerSimulator3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "#040810";
+      ctx.fillStyle = "#1b1411";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
       const cy = h / 2;
 
       // Draw a physical 3D lying body representation (Green)
-      ctx.strokeStyle = "rgba(16, 185, 129, 0.4)";
+      ctx.strokeStyle = "rgba(146, 168, 142, 0.4)";
       ctx.lineWidth = 1.5;
       ctx.beginPath();
       // Simple head + body line
@@ -459,7 +459,7 @@ export const OBEDecouplerSimulator3D: React.FC = () => {
       const separation = (100 - multisensoryAlignment) * 0.65;
       const observerY = cy + 20 - separation;
 
-      ctx.strokeStyle = `rgba(236, 72, 153, ${Math.max(0.15, (100 - multisensoryAlignment) / 100)})`;
+      ctx.strokeStyle = `rgba(207, 125, 97, ${Math.max(0.15, (100 - multisensoryAlignment) / 100)})`;
       ctx.beginPath();
       ctx.moveTo(cx - 70, observerY);
       ctx.lineTo(cx + 70, observerY);
@@ -482,17 +482,17 @@ export const OBEDecouplerSimulator3D: React.FC = () => {
       // Overlay text
       ctx.font = "bold 9px monospace";
       if (multisensoryAlignment > 70) {
-        ctx.fillStyle = "#10B981";
+        ctx.fillStyle = "#92a88e";
         ctx.fillText("TPJ STATUS: MULTI-SENSORY CONGRUENCE", cx - 90, cy - 65);
       } else {
-        ctx.fillStyle = "#EC4899";
+        ctx.fillStyle = "#cf7d61";
         ctx.fillText("TPJ STATUS: VESTIBULAR-VISUAL DECOUPLING ACTIVE", cx - 120, cy - 65);
       }
 
       ctx.font = "8px monospace";
-      ctx.fillStyle = "#10B981";
+      ctx.fillStyle = "#92a88e";
       ctx.fillText("PHYSICAL SOMATOSENSORY BODY", cx - 80, cy + 35);
-      ctx.fillStyle = "#EC4899";
+      ctx.fillStyle = "#cf7d61";
       ctx.fillText("FLOATING SUBJECTIVE EGO-CENTER", cx - 80, observerY - 12);
 
       t++;
@@ -504,23 +504,23 @@ export const OBEDecouplerSimulator3D: React.FC = () => {
   }, [multisensoryAlignment]);
 
   return (
-    <div className="my-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="my-5 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 p-4 space-y-3">
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
         <div className="flex items-center space-x-2">
-          <Activity size={14} className="text-pink-400" />
-          <span className="font-mono text-[9px] text-pink-400 font-bold block uppercase">CHAPTER 6 • MODEL 2</span>
+          <Activity size={14} className="text-earth-sage" />
+          <span className="font-mono text-[9px] text-earth-sage font-bold block uppercase">CHAPTER 6 • MODEL 2</span>
           <h4 className="font-sans text-xs font-bold text-white">Temporoparietal Junction Out-of-Body (OBE) Decoupler</h4>
         </div>
       </div>
-      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-white/5">
+      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-earth-clay/10">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[9px]">
         <div className="space-y-1">
-          <span className="text-slate-500">TPJ SENSORY BINDING ALIGNMENT</span>
-          <input type="range" min="10" max="100" value={multisensoryAlignment} onChange={(e) => setMultisensoryAlignment(parseInt(e.target.value))} className="w-full accent-[#00F2FE] h-1 bg-white/10 rounded" />
+          <span className="text-earth-sand/40">TPJ SENSORY BINDING ALIGNMENT</span>
+          <input type="range" min="10" max="100" value={multisensoryAlignment} onChange={(e) => setMultisensoryAlignment(parseInt(e.target.value))} className="w-full accent-[#92a88e] h-1 bg-white/10 rounded" />
         </div>
-        <div className="p-2.5 bg-[#0F172A] border border-white/5 rounded-lg text-slate-400 text-[8.5px] leading-snug font-sans">
+        <div className="p-2.5 bg-[#0F172A] border border-earth-clay/10 rounded-lg text-earth-sand/70 text-[8.5px] leading-snug font-sans">
           <span>Lowering multi-sensory vestibular-visual alignment simulates clinical hypoxia/TPJ disruption leading to a decoupled first-person perspective.</span>
         </div>
       </div>
@@ -561,7 +561,7 @@ export const NeuroDivideSimulator3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "#040810";
+      ctx.fillStyle = "#1b1411";
       ctx.fillRect(0, 0, w, h);
 
       const cy = h / 2;
@@ -616,7 +616,7 @@ export const NeuroDivideSimulator3D: React.FC = () => {
       ctx.stroke();
 
       ctx.font = "bold 9px monospace";
-      ctx.fillStyle = "#EF4444";
+      ctx.fillStyle = "#cf7d61";
       ctx.fillText(`STRATIFICATION DEFIANCE BARRIER: ${divideGap.toFixed(0)}m gap`, w / 2 - 100, cy - 65);
 
       ctx.font = "8px monospace";
@@ -634,24 +634,24 @@ export const NeuroDivideSimulator3D: React.FC = () => {
   }, [accessCost, interfaceBandwidth]);
 
   return (
-    <div className="my-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="my-5 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 p-4 space-y-3">
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
         <div className="flex items-center space-x-2">
-          <Shield size={14} className="text-red-400" />
-          <span className="font-mono text-[9px] text-red-400 font-bold block uppercase">CHAPTER 8 • MODEL 2</span>
+          <Shield size={14} className="text-earth-bark" />
+          <span className="font-mono text-[9px] text-earth-bark font-bold block uppercase">CHAPTER 8 • MODEL 2</span>
           <h4 className="font-sans text-xs font-bold text-white">Socioeconomic Cognitive Divide & Stratification Simulator</h4>
         </div>
       </div>
-      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-white/5">
+      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-earth-clay/10">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[9px]">
         <div className="space-y-1">
-          <span className="text-slate-500">TECHNOLOGICAL CO-PROCESSOR ACCESS COST</span>
+          <span className="text-earth-sand/40">TECHNOLOGICAL CO-PROCESSOR ACCESS COST</span>
           <input type="range" min="10" max="100" value={accessCost} onChange={(e) => setAccessCost(parseInt(e.target.value))} className="w-full accent-red-500 h-1 bg-white/10 rounded" />
         </div>
         <div className="space-y-1">
-          <span className="text-slate-500">INTERFACE BANDWIDTH SPECTRUM</span>
+          <span className="text-earth-sand/40">INTERFACE BANDWIDTH SPECTRUM</span>
           <input type="range" min="10" max="100" value={interfaceBandwidth} onChange={(e) => setInterfaceBandwidth(parseInt(e.target.value))} className="w-full accent-amber-500 h-1 bg-white/10 rounded" />
         </div>
       </div>
@@ -692,7 +692,7 @@ export const BidirectionalBCI3D: React.FC = () => {
     const render = () => {
       const w = canvas.width;
       const h = canvas.height;
-      ctx.fillStyle = "#040810";
+      ctx.fillStyle = "#1b1411";
       ctx.fillRect(0, 0, w, h);
 
       const cx = w / 2;
@@ -711,11 +711,11 @@ export const BidirectionalBCI3D: React.FC = () => {
 
       // Dual micro-probe array penetrating sheet
       // Probe 1: Read array (Green)
-      ctx.fillStyle = "#10B981";
+      ctx.fillStyle = "#92a88e";
       ctx.fillRect(cx - 50, cy - 60, 5, 80);
 
       // Probe 2: Write array (Cyan)
-      ctx.fillStyle = "#00F2FE";
+      ctx.fillStyle = "#92a88e";
       ctx.fillRect(cx + 40, cy - 60, 5, 80);
 
       if (loopActive) {
@@ -723,8 +723,8 @@ export const BidirectionalBCI3D: React.FC = () => {
         const readY = cy + 20 - ((t * 2) % 75);
         ctx.beginPath();
         ctx.arc(cx - 47.5, readY, 3, 0, Math.PI * 2);
-        ctx.fillStyle = "#10B981";
-        ctx.shadowColor = "#10B981";
+        ctx.fillStyle = "#92a88e";
+        ctx.shadowColor = "#92a88e";
         ctx.shadowBlur = 8;
         ctx.fill();
 
@@ -732,8 +732,8 @@ export const BidirectionalBCI3D: React.FC = () => {
         const writeY = cy - 55 + ((t * 1.5) % 70);
         ctx.beginPath();
         ctx.arc(cx + 42.5, writeY, 3, 0, Math.PI * 2);
-        ctx.fillStyle = "#00F2FE";
-        ctx.shadowColor = "#00F2FE";
+        ctx.fillStyle = "#92a88e";
+        ctx.shadowColor = "#92a88e";
         ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -751,9 +751,9 @@ export const BidirectionalBCI3D: React.FC = () => {
       }
 
       ctx.font = "8px monospace";
-      ctx.fillStyle = "#10B981";
+      ctx.fillStyle = "#92a88e";
       ctx.fillText("READ CORE [DECODE MOTOR INTENT]", cx - 140, cy + 42);
-      ctx.fillStyle = "#00F2FE";
+      ctx.fillStyle = "#92a88e";
       ctx.fillText("WRITE CORE [STIMULUS TACTILE]", cx + 25, cy + 42);
 
       t++;
@@ -765,7 +765,7 @@ export const BidirectionalBCI3D: React.FC = () => {
   }, [writeCurrent, loopActive]);
 
   return (
-    <div className="my-5 rounded-2xl border border-white/10 bg-white/5 p-4 space-y-3">
+    <div className="my-5 rounded-2xl border border-earth-clay/15 bg-earth-walnut/20 p-4 space-y-3">
       <div className="flex items-center justify-between border-b border-white/10 pb-2">
         <div className="flex items-center space-x-2">
           <Cpu size={14} className="text-emerald-400" />
@@ -773,15 +773,15 @@ export const BidirectionalBCI3D: React.FC = () => {
           <h4 className="font-sans text-xs font-bold text-white">Synchronous Bidirectional Read-Write Loop Processor</h4>
         </div>
       </div>
-      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-white/5">
+      <div ref={containerRef} className="relative h-44 w-full rounded-xl bg-black/40 overflow-hidden border border-earth-clay/10">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-[9px]">
         <div className="space-y-1">
-          <span className="text-slate-500">WRITE BACK STIMULUS STRENGTH</span>
-          <input type="range" min="10" max="100" value={writeCurrent} onChange={(e) => setWriteCurrent(parseInt(e.target.value))} className="w-full accent-[#00F2FE] h-1 bg-white/10 rounded" />
+          <span className="text-earth-sand/40">WRITE BACK STIMULUS STRENGTH</span>
+          <input type="range" min="10" max="100" value={writeCurrent} onChange={(e) => setWriteCurrent(parseInt(e.target.value))} className="w-full accent-[#92a88e] h-1 bg-white/10 rounded" />
         </div>
-        <button onClick={() => setLoopActive(!loopActive)} className={`py-1.5 rounded font-bold border transition-all ${loopActive ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-white/5 border-white/10 text-slate-300 hover:text-slate-200"}`}>
+        <button onClick={() => setLoopActive(!loopActive)} className={`py-1.5 rounded font-bold border transition-all ${loopActive ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-white/5 border-white/10 text-earth-parchment hover:text-slate-200"}`}>
           {loopActive ? "DEACTIVATE CLOSED-LOOP FEEDBACK" : "ACTIVATE BIDIRECTIONAL LOOP"}
         </button>
       </div>
